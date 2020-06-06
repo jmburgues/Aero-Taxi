@@ -22,13 +22,13 @@ public class Vuelo {
         this.tipoAvion = tipoAvion;
         this.partida = partida;
         this.llegada = llegada;
-        this.pasajeros = new ArrayList<Usuario>;
-        // comparo los valores de origen y destino para establecer la distancia
+        this.pasajeros = new ArrayList<Usuario>();
     }
 
-    public int agregarPasajero(Usuario pasajero){  // agrega un pasajero al vuelo y devuelve total de pasajeros
+    public int agregarPasajero(Usuario pasajero){
+        // agrega un pasajero al vuelo y devuelve total de pasajeros o -1 si no pudo agregar
         int rta = -1;
-            if(this.pasajeros.add(pasajeros))
+            if(this.pasajeros.add(pasajero))
                 rta = this.pasajeros.size();
         return rta;
     }
@@ -37,12 +37,52 @@ public class Vuelo {
         return this.pasajeros.remove(pasajero);
     }
 
-    public obtenerDistancia(){
+    public int obtenerDistancia(Ciudad origen, Ciudad destino){
+        // Devuelve distancia en Km o -1 si no existe destino.
 
+        int distancia = 0;
+
+        if(origen.equals(Ciudad.BUE)){
+            if(destino.equals(Ciudad.COR))
+                distancia = 695;
+            if(destino.equals(Ciudad.SCL))
+                distancia = 1400;
+            if(destino.equals(Ciudad.MVD))
+                distancia = 950;
+            else
+                distancia = -1;
+        }
+        else if(origen.equals(Ciudad.COR)){
+            if(destino.equals(Ciudad.MVD))
+                distancia = 1190;
+            if(destino.equals(Ciudad.SCL))
+                distancia = 1050;
+        }
+        else if(origen.equals(Ciudad.MVD)){
+            if(destino.equals(Ciudad.SCL))
+                distancia = 2100;
+            else
+                distancia = -1;
+        }
+        else if(origen.equals(Ciudad.SCL)){
+            distancia = -1;
+        }
+
+        return distancia;
     }
 
     public int calcularCosto(){
-        //implementar
+        return ( this.obtenerDistancia(this.origen,this.destino) * this.tipoAvion.costoKm() ) + ( this.pasajeros.size() * 3500 ) + tipoAvion.getTarifa();
+    }
+
+    public int cantidadPasajeros(){
+        return this.pasajeros.size();
+    }
+
+    public void listarPasajeros(){
+        for(Usuario unUsuario : pasajeros){
+            System.out.println(unUsuario);
+        }
     }
 
     public Avion getTipoAvion() {
@@ -88,6 +128,7 @@ public class Vuelo {
     @Override
     public String toString(){
         return ("[VUELO] " + this.origen + " - " + this.destino + ": Partida: " + this.partida +
-                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion);
+                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantidadPasajeros());
+    }
 }
 
