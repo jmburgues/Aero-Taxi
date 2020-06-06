@@ -37,7 +37,7 @@ public class Vuelo {
         return this.pasajeros.remove(pasajero);
     }
 
-    public int obtenerDistancia(Ciudad origen, Ciudad destino){
+    public int obtenerDistancia(){
         // Devuelve distancia en Km o -1 si no existe destino.
 
         int distancia = 0;
@@ -72,7 +72,7 @@ public class Vuelo {
     }
 
     public int calcularCosto(){
-        return ( this.obtenerDistancia(this.origen,this.destino) * this.tipoAvion.costoKm() ) + ( this.pasajeros.size() * 3500 ) + tipoAvion.getTarifa();
+        return ( this.obtenerDistancia() * this.tipoAvion.costoKm() ) + ( this.pasajeros.size() * 3500 ) + tipoAvion.getTarifa();
     }
 
     public int cantidadPasajeros(){
