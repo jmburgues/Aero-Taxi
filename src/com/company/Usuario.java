@@ -38,6 +38,4 @@ public class Usuario {
     public void setDni(int dni) {
         this.dni = dni;
     }
-
-    //sda
 }
