@@ -3,11 +3,6 @@ package com.company;
 import java.util.Date;
 import java.util.ArrayList;
 
-/*
-    La clase Vuelo debe ser una clase privada anidada dentro de la clase AeroTaxi,
-    porque un registro de tipo Vuelo solo le debe interesar a esta primer clase.
- */
-
 public class Vuelo {
     public Ciudad origen;
     public Ciudad destino;
@@ -71,8 +66,17 @@ public class Vuelo {
         return distancia;
     }
 
-    public int calcularCosto(){
-        return ( this.obtenerDistancia() * this.tipoAvion.costoKm() ) + ( this.pasajeros.size() * 3500 ) + tipoAvion.getTarifa();
+    public float calcularCosto(){
+
+        int tarifa = 0;
+        if(tipoAvion instanceof Gold)
+            tarifa = ((Gold) tipoAvion).getTarifa();
+        else if(tipoAvion instanceof Silver)
+            tarifa = ((Silver) tipoAvion).getTarifa();
+        else if (tipoAvion instanceof Bronze)
+            tarifa = ((Bronze) tipoAvion).getTarifa();
+
+        return (( this.obtenerDistancia() * this.tipoAvion.getCostoXkm() ) + ( this.pasajeros.size() * 3500 ) + tarifa );
     }
 
     public int cantidadPasajeros(){
