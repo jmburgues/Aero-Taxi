@@ -31,4 +31,48 @@ public abstract class Avion {
                 ", disponible=" + disponible
                 ;
     }
+
+    public void setCapacidadMax(int capacidadMax) {
+        this.capacidadMax = capacidadMax;
+    }
+
+    public void setCombustible(int combustible) {
+        this.combustible = combustible;
+    }
+
+    public void setCostoXkm(float costoXkm) {
+        this.costoXkm = costoXkm;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    public void setPropulsion(Propulsion propulsion) {
+        this.propulsion = propulsion;
+    }
+
+    public void setVelocidadMax(int velocidadMax) {
+        this.velocidadMax = velocidadMax;
+    }
+
+    public float getCostoXkm() {
+        return costoXkm;
+    }
+
+    public int getCapacidadMax() {
+        return capacidadMax;
+    }
+
+    public int getCombustible() {
+        return combustible;
+    }
+
+    public int getVelocidadMax() {
+        return velocidadMax;
+    }
+
+    public Propulsion getPropulsion() {
+        return propulsion;
+    }
 }
