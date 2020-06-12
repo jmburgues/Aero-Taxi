@@ -38,4 +38,9 @@ public class Usuario {
     public void setDni(int dni) {
         this.dni = dni;
     }
+
+    public String toString(){
+        return "[USUARIO] \n Nombre: " + this.nombre + "\n Apellido: " + this.apellido +
+                "\n Edad: " + this.edad + "\n DNI: " + this.dni ;
+    }
 }
