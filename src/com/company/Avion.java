@@ -6,18 +6,26 @@ public abstract class Avion {
     private int capacidadMax;
     private int velocidadMax;
     private Propulsion propulsion;
-    private boolean disponible;
+    private boolean enVuelo;
 
     public Avion () {}
 
-    public Avion (int  combustible, float costoXkm,int capacidadMax,int velocidadMax, Propulsion propulsion, boolean disponible)
+    public Avion (int  combustible,int capacidadMax, Propulsion propulsion, boolean disponible)
     {
         this.capacidadMax = capacidadMax;
         this.combustible = combustible;
-        this.costoXkm = costoXkm;
-        this.velocidadMax = velocidadMax;
+        this.costoXkm = (float) (Math.random() * (300 - 150) + 150);
         this.propulsion = propulsion;
-        this.disponible = disponible;
+
+        if(propulsion == Propulsion.PISTONES)
+            velocidadMax = 300;
+        else if(propulsion == Propulsion.HELICE)
+            velocidadMax = 500;
+        else if(propulsion == Propulsion.REACCION)
+            velocidadMax = 800;
+
+        this.enVuelo = disponible;
+
     }
 
     @Override
@@ -28,7 +36,7 @@ public abstract class Avion {
                 ", capacidadMax=" + capacidadMax +
                 ", velocidadMax=" + velocidadMax +
                 ", propulsion=" + propulsion +
-                ", disponible=" + disponible
+                ", disponible=" + enVuelo
                 ;
     }
 
@@ -45,7 +53,7 @@ public abstract class Avion {
     }
 
     public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
+        this.enVuelo = disponible;
     }
 
     public void setPropulsion(Propulsion propulsion) {
