@@ -16,14 +16,7 @@ public abstract class Avion {
         this.combustible = combustible;
         this.costoXkm = (float) (Math.random() * (300 - 150) + 150);
         this.propulsion = propulsion;
-
-        if(propulsion == Propulsion.PISTONES)
-            velocidadMax = 300;
-        else if(propulsion == Propulsion.HELICE)
-            velocidadMax = 500;
-        else if(propulsion == Propulsion.REACCION)
-            velocidadMax = 800;
-
+        this.velocidadMax = propulsion.getVelocidadMax();
         this.enVuelo = disponible;
 
     }
