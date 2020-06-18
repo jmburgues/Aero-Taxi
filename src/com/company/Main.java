@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -14,20 +15,43 @@ public class Main {
 
     public static void main(String[] args) {
 
+    	// declaro bases de datos en memoria
 		ArrayList<Usuario> baseClientes = new ArrayList<>();
 		ArrayList<Avion> flotaAviones = new ArrayList<>();
 		ArrayList<Vuelo> vuelosPactados = new ArrayList<>();
 
-    	/*
-			codigo para operaciones de carga de variables en memoria desde archivo
-		 */
+		// leo persistencias en archivos y cargo las bases en memoria
+		File archivo = new File("baseDatos.dat");
+		try {
+			if (archivo.exists()) {
+				FileInputStream flujoEntrada = new FileInputStream(archivo);
+				ObjectInputStream entradaObjeto = new ObjectInputStream(flujoEntrada);
 
-		if (flotaAviones.isEmpty()) {
-			flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
-			flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
-			flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
+				boolean finArchivo = false;
+				while (!finArchivo) {
+					Object aux = entradaObjeto.readObject();
+					if (aux != null) {
+						if (aux instanceof Usuario)
+							baseClientes.add((Usuario) aux);
+						else if (aux instanceof Avion)
+							flotaAviones.add((Avion) aux);
+						else if (aux instanceof Vuelo)
+							vuelosPactados.add((Vuelo) aux);
+					} else
+						finArchivo = true;
+				}
+			}
+			else { // si no hay archivo, cargo datos de ejemplo
+				flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
+				flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
+				flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
+			}
+		}catch(IOException | ClassNotFoundException e){
+			System.out.println("No se puede leer la base de datos: " + e.getMessage());
+			e.printStackTrace();
 		}
 
+		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
 
 		Usuario usrLogin = Main.authLogin(baseClientes);
@@ -76,6 +100,7 @@ public class Main {
 		}
 	}
 
+	// funciones de la clase Main
     public static Usuario authLogin(ArrayList<Usuario> baseClientes){
 
 			Scanner teclado = new Scanner(System.in);
