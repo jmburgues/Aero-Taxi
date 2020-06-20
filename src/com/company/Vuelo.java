@@ -1,9 +1,10 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
 
-public class Vuelo {
+public class Vuelo implements Serializable {
     public Ciudad origen;
     public Ciudad destino;
     public Avion tipoAvion;
