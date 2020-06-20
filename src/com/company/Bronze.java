@@ -1,6 +1,8 @@
 package com.company;
 
-public class Bronze extends Avion {
+import java.io.Serializable;
+
+public class Bronze extends Avion implements Serializable {
     private int tarifa;
 
     public Bronze (){}

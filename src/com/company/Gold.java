@@ -1,8 +1,9 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class Gold extends Avion {
+public class Gold extends Avion implements Serializable {
     private boolean wifi;
     private boolean catering;
     private int tarifa;
