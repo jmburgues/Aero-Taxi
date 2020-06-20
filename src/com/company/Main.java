@@ -165,11 +165,10 @@ public class Main {
 	public static void cancelarVuelo(Usuario usr, Vuelo unVuelo) {
 		Date partida= unVuelo.getPartida();
 		Date diaDeHoy= new Date();
+		
+		int dias= (int) ((partida.getTime()-diaDeHoy.getTime())/86400000);
 
-		long diff= partida.getTime() - diaDeHoy.getTime();
-		int diffInDays= (int) (diff /(1000 60 60*24));
-
-		if (diffInDays > 1){
+		if (dias*(-1) > 1){
 			unVuelo.eliminarPasajero(usr);
 		}else{
 			System.out.println("No se puede cancelar un vuelo con menos de 24hs de anticipacion");
