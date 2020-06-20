@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,12 +13,12 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-
 	/* CORRECCIONES:
 	Verificar la utilidad del boolean "enVuelo" de la clase Avion.
 	Para comprobar si esta disponible en una fecha dada debería implementarse una busqueda
 	en vuelosPactados y si existe devolver false. El atributo de clase enVuelo no serviría.
 	 */
+	public static final String ARCHIVO_BASE = "baseDatos.dat";
 
 	public static void main(String[] args) {
 
@@ -27,7 +28,7 @@ public class Main {
 		ArrayList<Vuelo> vuelosPactados = new ArrayList<>();
 
 		// leo persistencias en archivos y cargo las bases en memoria
-		File archivo = new File("baseDatos.dat");
+		File archivo = new File(ARCHIVO_BASE);
 		if (archivo.exists()) {
 			try {
 				FileInputStream flujoEntrada = new FileInputStream(archivo);
@@ -49,8 +50,7 @@ public class Main {
 			} catch (IOException | ClassNotFoundException e) {
 				System.out.println("No se puede leer la base de datos: " + e.getMessage());
 				e.printStackTrace();
-			}
-			finally{
+			} finally {
 //************************* NO ME DEJA CERRAR EL STREAM. *****************************
 //************************* NO ME DEJA CERRAR EL STREAM. *****************************
 //************************* NO ME DEJA CERRAR EL STREAM. *****************************
@@ -238,7 +238,7 @@ public class Main {
 		}
 	}
 
-	public static LocalDateTime solicitarFechayHora(){
+	public static LocalDateTime solicitarFechayHora() {
 		Scanner teclado = new Scanner(System.in);
 		LocalDateTime fecha = null;
 		boolean fechaOk;
@@ -314,5 +314,34 @@ public class Main {
 			}
 		} else
 			System.out.println("La base de clientes está vacía.");
+	}
+
+	public static void persistirEnArchivo(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> flotaAviones) {
+		File archivo = new File(ARCHIVO_BASE);
+		if (archivo.exists()) {
+			try {
+				FileOutputStream flujoSalida = new FileOutputStream(archivo);
+				ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
+
+				for (Usuario aux : baseClientes) {
+					salidaObjeto.writeObject(aux);
+				}
+				for (Vuelo aux : vuelosPactados) {
+					salidaObjeto.writeObject(aux);
+				}
+				for (Avion aux : flotaAviones) {
+					salidaObjeto.writeObject(aux);
+				}
+			} catch (IOException e) {
+				System.out.println("No se puede leer la base de datos: " + e.getMessage());
+				e.printStackTrace();
+			} finally {
+			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			}
+		}
 	}
 }
