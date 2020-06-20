@@ -1,6 +1,8 @@
 package com.company;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -52,9 +54,11 @@ public class Main {
 
 				switch (opcionMenu) {
 					case 1:
+
 						/* metodo contratar vuelo */
 						break;
 					case 2:
+						//cancelarVuelo(usrLogin, );
 						/* metodo cancelar vuelo */
 						break;
 					case 3:
@@ -156,5 +160,20 @@ public class Main {
 			}
 		} else
 			System.out.println("La base de clientes está vacía.");
+	}
+
+	public static void cancelarVuelo(Usuario usr, Vuelo unVuelo) {
+		Date partida= unVuelo.getPartida();
+		Date diaDeHoy= new Date();
+
+		long diff= partida.getTime() - diaDeHoy.getTime();
+		int diffInDays= (int) (diff /(1000 60 60*24));
+
+		if (diffInDays > 1){
+			unVuelo.eliminarPasajero(usr);
+		}else{
+			System.out.println("No se puede cancelar un vuelo con menos de 24hs de anticipacion");
+		}
+
 	}
 }
