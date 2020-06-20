@@ -15,9 +15,9 @@ public class Main {
 	en vuelosPactados y si existe devolver false. El atributo de clase enVuelo no serviría.
 	 */
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-    	// declaro bases de datos en memoria
+		// declaro bases de datos en memoria
 		ArrayList<Usuario> baseClientes = new ArrayList<>();
 		ArrayList<Avion> flotaAviones = new ArrayList<>();
 		ArrayList<Vuelo> vuelosPactados = new ArrayList<>();
@@ -42,13 +42,12 @@ public class Main {
 					} else
 						finArchivo = true;
 				}
-			}
-			else { // si no hay archivo, cargo datos de ejemplo
+			} else { // si no hay archivo, cargo datos de ejemplo
 				flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
 				flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
 				flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
 			}
-		}catch(IOException | ClassNotFoundException e){
+		} catch (IOException | ClassNotFoundException e) {
 			System.out.println("No se puede leer la base de datos: " + e.getMessage());
 			e.printStackTrace();
 		}
@@ -60,7 +59,7 @@ public class Main {
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
 
 		int dni = Main.solicitarDni();
-		Usuario usuarioAutorizado = obtenerUsr(baseClientes,dni);
+		Usuario usuarioAutorizado = obtenerUsr(baseClientes, dni);
 		Scanner teclado = new Scanner(System.in);
 		int opcionMenu;
 
@@ -95,8 +94,9 @@ public class Main {
 		}
 		while (opcionMenu != 5);
 	}
+
 	// funciones de la clase Main
-    public static int solicitarDni() {
+	public static int solicitarDni() {
 		Scanner teclado = new Scanner(System.in);
 
 		int dni = 0;
@@ -118,36 +118,36 @@ public class Main {
 	}
 
 	public static Usuario obtenerUsr(ArrayList<Usuario> baseClientes, int dni) {
-			Usuario unUsuario = null;
-			boolean usrRegistrado = false;
+		Usuario unUsuario = null;
+		boolean usrRegistrado = false;
 
-			if(!baseClientes.isEmpty()) {
-				for (int i = 0; i < baseClientes.size(); i++) {
-					unUsuario = baseClientes.get(i);
-					if (unUsuario != null && unUsuario.getDni() == dni) {
-						usrRegistrado = true;
-						break;
-					}
+		if (!baseClientes.isEmpty()) {
+			for (int i = 0; i < baseClientes.size(); i++) {
+				unUsuario = baseClientes.get(i);
+				if (unUsuario != null && unUsuario.getDni() == dni) {
+					usrRegistrado = true;
+					break;
 				}
 			}
+		}
 				/*
 				Aqui se puede implementar control por contraseña
 				 */
-			if(baseClientes.isEmpty() || !usrRegistrado){
-				unUsuario = Main.nuevoUsuario();
-				baseClientes.add(unUsuario);
-			}
-
-			return unUsuario;
+		if (baseClientes.isEmpty() || !usrRegistrado) {
+			unUsuario = Main.nuevoUsuario();
+			baseClientes.add(unUsuario);
 		}
 
-    public static Usuario nuevoUsuario(){
+		return unUsuario;
+	}
 
-    	Scanner teclado = new Scanner(System.in);
-    	String nombre, apellido;
-    	int dni, edad;
+	public static Usuario nuevoUsuario() {
 
-    	while(true){
+		Scanner teclado = new Scanner(System.in);
+		String nombre, apellido;
+		int dni, edad;
+
+		while (true) {
 			try {
 				System.out.println("Ingrese primer nombre: ");
 				nombre = teclado.nextLine();
@@ -158,7 +158,7 @@ public class Main {
 				System.out.println("Ingrese edad: ");
 				edad = teclado.nextInt();
 
-				return new Usuario(nombre,apellido,dni,edad);
+				return new Usuario(nombre, apellido, dni, edad);
 
 			} catch (InputMismatchException e) {
 				System.out.println("Los datos ingresados son incorrectos: (" + e + ")");
@@ -167,10 +167,10 @@ public class Main {
 		}
 	}
 
-	public static void contratarVuelo(){
-    	Scanner teclado = new Scanner(System.in);
-    	System.out.println("Ingrese fecha de partida: ");
-    	String fecha = teclado.nextLine();
+	public static void contratarVuelo() {
+		Scanner teclado = new Scanner(System.in);
+		System.out.println("Ingrese fecha de partida: ");
+		String fecha = teclado.nextLine();
 		System.out.println("Ingrese fecha de llegada: ");
 		String llegada = teclado.nextLine();
 		// sumar metodo de validar fecha
@@ -178,37 +178,45 @@ public class Main {
 		// mostrar destinos que no coincidan con el origen
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
-							"2- Cordoba \n"+
-							"3- Montevideo \n" +
-							"4- Santiago de chile \n");
+				"2- Cordoba \n" +
+				"3- Montevideo \n" +
+				"4- Santiago de chile \n");
 		Scanner nuevo = new Scanner(System.in);
 		int num = nuevo.nextInt();
 		Ciudad origen;
-		if (num == 1)
-		{origen = Ciudad.BUE;}
-		if (num == 2)
-		{origen = Ciudad.COR;}
-		if (num == 3)
-		{origen = Ciudad.MVD;}
-		if (num == 4)
-		{origen = Ciudad.SCL;}
+		if (num == 1) {
+			origen = Ciudad.BUE;
+		}
+		if (num == 2) {
+			origen = Ciudad.COR;
+		}
+		if (num == 3) {
+			origen = Ciudad.MVD;
+		}
+		if (num == 4) {
+			origen = Ciudad.SCL;
+		}
 		int a = nuevo.nextInt();
 		Ciudad destino;
 		do {
 			System.out.println("Seleccione destino diferente al origen");
 			System.out.println("1- Buenos aires \n" +
-					"2- Cordoba \n"+
+					"2- Cordoba \n" +
 					"3- Montevideo \n" +
 					"4- Santiago de chile \n");
-			if (num == 1)
-			{destino = Ciudad.BUE;}
-			if (num == 2)
-			{destino = Ciudad.COR;}
-			if (num == 3)
-			{destino = Ciudad.MVD;}
-			if (num == 4)
-			{destino = Ciudad.SCL;}
-		}while (origen == destino);
+			if (num == 1) {
+				destino = Ciudad.BUE;
+			}
+			if (num == 2) {
+				destino = Ciudad.COR;
+			}
+			if (num == 3) {
+				destino = Ciudad.MVD;
+			}
+			if (num == 4) {
+				destino = Ciudad.SCL;
+			}
+		} while (origen == destino);
 		Main.mostrarAvionesDisp(fecha);
 		Avion reservado = new Avion();
 		reservado = Main.reservar();
@@ -220,39 +228,32 @@ public class Main {
 				"2- Cancelar.");
 		Scanner conf = new Scanner(System.in);
 		int confirmacion = conf.nextInt();
-		if(confirmacion == 1)
-		{
+		if (confirmacion == 1) {
 			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
 			vuelosPactados.add(vuelonuevo);
 		}
-
 	}
 
-
-	public static Avion reservar ()
-	{
+	public static Avion reservar() {
 		Scanner aviondes = new Scanner(System.in);
 		int flag = 0;
-		while(flag == 0) {													//Pide el numero de avion a reservar
+		while (flag == 0) {                                                    //Pide el numero de avion a reservar
 			System.out.println("Ingrese el numero del avion disponible que desee:");
-			int avion = aviondes.nextInt();									//Si ya esta reservado te pide que busques otro
-			if (flotaAviones.get(avion).enVuelo == true)
-			{
+			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
+			if (flotaAviones.get(avion).enVuelo == true) {
 				System.out.println("EL avion esta ocupado en esa fecha, elija otro");
-			}
-			else															//Si no lo reserva cambiando enVuelo a true
+			} else                                                            //Si no lo reserva cambiando enVuelo a true
 			{
 				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
 				flotaAviones.get(avion).enVuelo = true;
 				flag = 1;
 			}
 		}
-		return flotaAviones.get(avion); 		 		 		 	 		//Devuelve el avion que se reservo
+		return flotaAviones.get(avion);                                    //Devuelve el avion que se reservo
 	}
 
 	//Tratar de que solo muestre los aviones disponibles
-	public static void mostrarAvionesDisp (String fecha)
-	{
+	public static void mostrarAvionesDisp(String fecha) {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
 		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
@@ -261,17 +262,16 @@ public class Main {
 			System.out.println(flotaAviones.get(i).tostring());   //la imprime
 			int flag = 0;
 			int p = 0;
-			while(flag == 0 && a <= j)												//recorre los vuelos pactados
+			while (flag == 0 && a <= j)                                                //recorre los vuelos pactados
 			{
-				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)		    //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
-					if (fecha == vuelosPactados.get(p).partida){					//si esta ocupado enVuelo pasa a ser true
+					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado enVuelo pasa a ser true
 						System.out.println("Avion no disponible para esa fecha");
 						flag = 1;
 						flotaAviones.get(i).enVuelo = true;
 					}
-					if (fecha == vuelosPactados.get(p).llegada)
-					{
+					if (fecha == vuelosPactados.get(p).llegada) {
 						System.out.println("Avion no disponible para esa fecha");
 						flag = 1;
 						flotaAviones.get(i).enVuelo = true;
@@ -281,19 +281,6 @@ public class Main {
 			}
 
 		}
-	}
-
-
-
-    	System.out.println("Ingrese fecha de viaje (dd/mm/aaaa): ");
-    	String fecha = teclado.nextLine();
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-
-		/**
-		 *
-		 *  CONTINUAR
-		 */
-
 	}
 
 	public static void listarClientes(ArrayList<Usuario> base) {
