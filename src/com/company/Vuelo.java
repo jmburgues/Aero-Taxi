@@ -32,35 +32,37 @@ public class Vuelo implements Serializable {
     public boolean eliminarPasajero(Usuario pasajero){
         return this.pasajeros.remove(pasajero);
     }
-
+/*
+  MODIFICAR VALIDACIONES DE OBTENER DISTANCIA, DEBE ABARCAR TODOS LOS DESTINOS!!!
+ */
     public int obtenerDistancia(){
         // Devuelve distancia en Km o -1 si no existe destino.
 
         int distancia = 0;
 
-        if(origen.equals(Ciudad.BUE)){
-            if(destino.equals(Ciudad.COR))
+        if(origen == Ciudad.BUE){
+            if(destino == Ciudad.COR)
                 distancia = 695;
-            if(destino.equals(Ciudad.SCL))
+            if(destino == Ciudad.SCL)
                 distancia = 1400;
-            if(destino.equals(Ciudad.MVD))
+            if(destino == Ciudad.MVD)
                 distancia = 950;
             else
                 distancia = -1;
         }
-        else if(origen.equals(Ciudad.COR)){
-            if(destino.equals(Ciudad.MVD))
+        else if(origen == Ciudad.COR){
+            if(destino == Ciudad.MVD)
                 distancia = 1190;
-            if(destino.equals(Ciudad.SCL))
+            if(destino == Ciudad.SCL)
                 distancia = 1050;
         }
-        else if(origen.equals(Ciudad.MVD)){
-            if(destino.equals(Ciudad.SCL))
+        else if(origen == Ciudad.MVD){
+            if(destino == Ciudad.SCL)
                 distancia = 2100;
             else
                 distancia = -1;
         }
-        else if(origen.equals(Ciudad.SCL)){
+        else if(origen == Ciudad.SCL){
             distancia = -1;
         }
 

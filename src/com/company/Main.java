@@ -54,8 +54,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		File file = new File("");
-		ObjectMapper
 
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
@@ -182,6 +180,9 @@ public class Main {
     	String fecha = teclado.nextLine();
 		System.out.println("Ingrese fecha de llegada: ");
 		String llegada = teclado.nextLine();
+		// sumar metodo de validar fecha
+		// obtener fecha de llegada automaticamentre con un metodo obtenerLlegada();
+		// mostrar destinos que no coincidan con el origen
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
 							"2- Cordoba \n"+
