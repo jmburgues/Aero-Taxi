@@ -1,23 +1,24 @@
 package com.company;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Vuelo implements Serializable {
     public Ciudad origen;
     public Ciudad destino;
     public Avion tipoAvion;
-    public Date partida;
-    public Date llegada;
+    public LocalDateTime partida;
+    public LocalDateTime llegada;
     public ArrayList<Usuario> pasajeros;
 
-    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, Date partida, Date llegada) {
+    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDateTime partida) {
         this.origen = origen;
         this.destino = destino;
         this.tipoAvion = tipoAvion;
         this.partida = partida;
-        this.llegada = llegada;
+        this.llegada = partida.plusHours(this.obtenerDistancia() / this.tipoAvion.getVelocidadMax());
         this.pasajeros = new ArrayList<Usuario>();
     }
 
@@ -32,41 +33,20 @@ public class Vuelo implements Serializable {
     public boolean eliminarPasajero(Usuario pasajero){
         return this.pasajeros.remove(pasajero);
     }
-/*
-  MODIFICAR VALIDACIONES DE OBTENER DISTANCIA, DEBE ABARCAR TODOS LOS DESTINOS!!!
- */
+
     public int obtenerDistancia(){
-        // Devuelve distancia en Km o -1 si no existe destino.
+		HashMap<Integer,Integer> tablaDistancias = new HashMap<Integer, Integer>();
 
-        int distancia = 0;
+		tablaDistancias.put((Ciudad.BUE).hashCode()+(Ciudad.COR).hashCode(),695);
+		tablaDistancias.put((Ciudad.BUE).hashCode()+(Ciudad.SCL).hashCode(),1400);
+		tablaDistancias.put((Ciudad.BUE).hashCode()+(Ciudad.MVD).hashCode(),950);
+		tablaDistancias.put((Ciudad.COR).hashCode()+(Ciudad.MVD).hashCode(),1190);
+		tablaDistancias.put((Ciudad.COR).hashCode()+(Ciudad.SCL).hashCode(),1050);
+		tablaDistancias.put((Ciudad.MVD).hashCode()+(Ciudad.SCL).hashCode(),2100);
 
-        if(origen == Ciudad.BUE){
-            if(destino == Ciudad.COR)
-                distancia = 695;
-            if(destino == Ciudad.SCL)
-                distancia = 1400;
-            if(destino == Ciudad.MVD)
-                distancia = 950;
-            else
-                distancia = -1;
-        }
-        else if(origen == Ciudad.COR){
-            if(destino == Ciudad.MVD)
-                distancia = 1190;
-            if(destino == Ciudad.SCL)
-                distancia = 1050;
-        }
-        else if(origen == Ciudad.MVD){
-            if(destino == Ciudad.SCL)
-                distancia = 2100;
-            else
-                distancia = -1;
-        }
-        else if(origen == Ciudad.SCL){
-            distancia = -1;
-        }
+		int clave = origen.hashCode() + destino.hashCode();
 
-        return distancia;
+		return tablaDistancias.get(clave).intValue();
     }
 
     public float calcularCosto(){
@@ -100,19 +80,19 @@ public class Vuelo implements Serializable {
         this.tipoAvion = tipoAvion;
     }
 
-    public Date getPartida() {
+    public LocalDateTime getPartida() {
         return partida;
     }
 
-    public void setPartida(Date partida) {
+    public void setPartida(LocalDateTime partida) {
         this.partida = partida;
     }
 
-    public Date getLlegada() {
+    public LocalDateTime getLlegada() {
         return llegada;
     }
 
-    public void setLlegada(Date llegada) {
+    public void setLlegada(LocalDateTime llegada) {
         this.llegada = llegada;
     }
 

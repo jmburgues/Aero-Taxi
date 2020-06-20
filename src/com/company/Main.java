@@ -2,6 +2,10 @@ package com.company;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
@@ -24,8 +28,8 @@ public class Main {
 
 		// leo persistencias en archivos y cargo las bases en memoria
 		File archivo = new File("baseDatos.dat");
-		try {
-			if (archivo.exists()) {
+		if (archivo.exists()) {
+			try {
 				FileInputStream flujoEntrada = new FileInputStream(archivo);
 				ObjectInputStream entradaObjeto = new ObjectInputStream(flujoEntrada);
 
@@ -42,19 +46,23 @@ public class Main {
 					} else
 						finArchivo = true;
 				}
-			} else { // si no hay archivo, cargo datos de ejemplo
-				flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
-				flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
-				flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
+			} catch (IOException | ClassNotFoundException e) {
+				System.out.println("No se puede leer la base de datos: " + e.getMessage());
+				e.printStackTrace();
 			}
-		} catch (IOException | ClassNotFoundException e) {
-			System.out.println("No se puede leer la base de datos: " + e.getMessage());
-			e.printStackTrace();
+			finally{
+//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+//************************* NO ME DEJA CERRAR EL STREAM. *****************************
+			}
+		} else { // si no hay archivo, cargo datos de ejemplo
+			flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
+			flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
+			flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
 		}
-	/*	finaly{
-			// cerrar archivo
-		}
-	*/
+
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
 
@@ -169,12 +177,8 @@ public class Main {
 
 	public static void contratarVuelo() {
 		Scanner teclado = new Scanner(System.in);
-		System.out.println("Ingrese fecha de partida: ");
-		String fecha = teclado.nextLine();
-		System.out.println("Ingrese fecha de llegada: ");
-		String llegada = teclado.nextLine();
-		// sumar metodo de validar fecha
-		// obtener fecha de llegada automaticamentre con un metodo obtenerLlegada();
+		System.out.println("Ingrese fecha y hora de partida (aaaa-mm-dd hh:mm): ");
+		LocalDateTime fecha = solicitarFechayHora();
 		// mostrar destinos que no coincidan con el origen
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
@@ -232,6 +236,26 @@ public class Main {
 			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
 			vuelosPactados.add(vuelonuevo);
 		}
+	}
+
+	public static LocalDateTime solicitarFechayHora(){
+		Scanner teclado = new Scanner(System.in);
+		LocalDateTime fecha = null;
+		boolean fechaOk;
+		do {
+			try {
+				DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+				fecha = LocalDateTime.parse(teclado.nextLine(), formato);
+				System.out.println(fecha);
+				fechaOk = true;
+			} catch (DateTimeParseException e) {
+				System.out.println("Formato de fecha incorrecto. Año-mes-dia hora:minutos");
+				fechaOk = false;
+			}
+		}
+		while (!fechaOk);
+
+		return fecha;
 	}
 
 	public static Avion reservar() {
