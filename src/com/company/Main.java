@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -29,14 +30,14 @@ public class Main {
 
 				boolean finArchivo = false;
 				while (!finArchivo) {
-					Object aux = entradaObjeto.readObject();
-					if (aux != null) {
-						if (aux instanceof Usuario)
-							baseClientes.add((Usuario) aux);
-						else if (aux instanceof Avion)
-							flotaAviones.add((Avion) aux);
-						else if (aux instanceof Vuelo)
-							vuelosPactados.add((Vuelo) aux);
+					Object leido = entradaObjeto.readObject();
+					if (leido != null) {
+						if (leido instanceof Usuario)
+							baseClientes.add((Usuario) leido);
+						else if (leido instanceof Avion)
+							flotaAviones.add((Avion) leido);
+						else if (leido instanceof Vuelo)
+							vuelosPactados.add((Vuelo) leido);
 					} else
 						finArchivo = true;
 				}
@@ -50,76 +51,72 @@ public class Main {
 			System.out.println("No se puede leer la base de datos: " + e.getMessage());
 			e.printStackTrace();
 		}
-
+	/*	finaly{
+			// cerrar archivo
+		}
+	*/
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
 
-		Usuario usrLogin = Main.authLogin(baseClientes);
+		int dni = Main.solicitarDni();
+		Usuario usuarioAutorizado = obtenerUsr(baseClientes,dni);
+		Scanner teclado = new Scanner(System.in);
+		int opcionMenu;
 
-		if (usrLogin != null) {
-			Scanner teclado = new Scanner(System.in);
-			int opcionMenu;
+		do {
+			System.out.println("1- Contratar vuelo.\n" +
+					"2- Cancelar vuelo.\n" +
+					"3- Ver base de clientes.\n" +
+					"4- Ver vuelos programados.\n" +
+					"5- Salir");
 
-			do {
-				System.out.println("1- Contratar vuelo.\n" +
-						"2- Cancelar vuelo.\n" +
-						"3- Ver base de clientes.\n" +
-						"4- Ver vuelos programados.\n" +
-						"5- Salir");
+			opcionMenu = teclado.nextInt();
 
-				try {
-					opcionMenu = teclado.nextInt();
-				} catch (InputMismatchException mensaje) {
-					System.out.println("El valor ingresado debe ser un numero");
-					opcionMenu = 0;
-				}
-
-				switch (opcionMenu) {
-					case 1:
-						/* metodo contratar vuelo */
-						break;
-					case 2:
-						/* metodo cancelar vuelo */
-						break;
-					case 3:
-						Main.listarClientes(baseClientes);
-						/* falta agregar:
-							Todos los datos personales.
-							La categoría del mejor avión utilizado (Gold, Silver o Bronze).
-							Total gastado de todos sus vuelos.
-						 */
-						break;
-					case 4:
-						/* metodo ver vuelos programados */
-						break;
-					default:
-						break;
-				}
+			switch (opcionMenu) {
+				case 1:
+					/* metodo contratar vuelo */
+					break;
+				case 2:
+					/* metodo cancelar vuelo */
+					break;
+				case 3:
+					Main.listarClientes(baseClientes);
+					/* falta agregar:
+						Todos los datos personales.
+						La categoría del mejor avión utilizado (Gold, Silver o Bronze).
+						Total gastado de todos sus vuelos.
+					 */
+					break;
+				case 4:
+					/* metodo ver vuelos programados */
+					break;
 			}
-			while (opcionMenu != 5);
 		}
+		while (opcionMenu != 5);
+	}
+	// funciones de la clase Main
+    public static int solicitarDni() {
+		Scanner teclado = new Scanner(System.in);
+
+		int dni = 0;
+		boolean dniInvalido;
+
+		do {
+			try {
+				System.out.println("Ingrese su DNI: ");
+				dni = teclado.nextInt();
+				dniInvalido = false;
+			} catch (InputMismatchException e) {
+				System.out.println("Ingrese un valor numerico valido.");
+				dniInvalido = true;
+			}
+		}
+		while (dniInvalido || (dni < 1000000 && dni > 60000000));
+
+		return dni;
 	}
 
-	// funciones de la clase Main
-    public static Usuario authLogin(ArrayList<Usuario> baseClientes){
-
-			Scanner teclado = new Scanner(System.in);
-
-			int dni = 0;
-			boolean dniInvalido;
-
-			do{
-				try {
-					System.out.println("Ingrese su DNI: ");
-					dni = teclado.nextInt();
-					dniInvalido = false;
-				} catch (InputMismatchException e) {
-					System.out.println("Ingrese un valor numerico valido.");
-					dniInvalido = true;
-				}
-			}
-			while(dniInvalido);
-
+	public static Usuario obtenerUsr(ArrayList<Usuario> baseClientes, int dni) {
 			Usuario unUsuario = null;
 			boolean usrRegistrado = false;
 
@@ -171,7 +168,15 @@ public class Main {
 
 	public static void contratarVuelo(){
     	Scanner teclado = new Scanner(System.in);
-    	System.out.println("Ingrese fecha: ");
+    	System.out.println("Ingrese fecha de viaje (dd/mm/aaaa): ");
+    	String fecha = teclado.nextLine();
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
+
+		/**
+		 *
+		 *  CONTINUAR
+		 */
+
 	}
 
 	public static void listarClientes(ArrayList<Usuario> base) {

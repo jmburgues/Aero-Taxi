@@ -37,6 +37,10 @@ public class Vuelo {
 
         int distancia = 0;
 
+        /*
+        Modificar equals por ==
+         */
+
         if(origen.equals(Ciudad.BUE)){
             if(destino.equals(Ciudad.COR))
                 distancia = 695;
