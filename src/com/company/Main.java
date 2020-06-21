@@ -208,7 +208,7 @@ public class Main {
 					"4- Santiago de chile \n");
 			if (num == 1)
 			{destino = Ciudad.BUE;}
-			if (num == 2)
+			if (num == 2)							//swich
 			{destino = Ciudad.COR;}
 			if (num == 3)
 			{destino = Ciudad.MVD;}
@@ -252,7 +252,7 @@ public class Main {
 				flotaAviones.get(avion).enVuelo = true;
 				flag = 1;
 			}
-		}
+		}																	
 		return flotaAviones.get(avion); 		 		 		 	 		//Devuelve el avion que se reservo
 	}
 
