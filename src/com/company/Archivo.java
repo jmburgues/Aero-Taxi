@@ -13,6 +13,7 @@ public class Archivo<T> {
 	}
 
 	public ArrayList<T> recuperar() {
+
 		File archivo = new File(archivoBase);
 		if (archivo.exists()) {
 			try {
@@ -35,6 +36,8 @@ public class Archivo<T> {
 				//************************* NO ME DEJA CERRAR EL STREAM. *****************************
 			}
 		}
+
+
 		return base;
 	}
 

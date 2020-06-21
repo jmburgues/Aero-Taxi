@@ -71,7 +71,7 @@ public class Main {
 		Scanner teclado = new Scanner(System.in);
 
 		int dni = 0;
-		boolean dniInvalido = false;
+		boolean dniInvalido;
 
 		do {
 			try {
@@ -93,9 +93,8 @@ public class Main {
 		boolean usrRegistrado = false;
 
 		if (!baseClientes.isEmpty()) {
-			for (int i = 0; i < baseClientes.size(); i++) {
-				unUsuario = baseClientes.get(i);
-				if (unUsuario != null && unUsuario.getDni() == dni) {
+			for (Usuario auxUsuario : baseClientes) {
+				if (auxUsuario != null && auxUsuario.getDni() == dni) {
 					usrRegistrado = true;
 					break;
 				}
@@ -105,14 +104,13 @@ public class Main {
 				Aqui se puede implementar control por contraseña
 				 */
 		if (baseClientes.isEmpty() || !usrRegistrado) {
-			unUsuario = Main.nuevoUsuario();
-			baseClientes.add(unUsuario);
+			unUsuario = Main.nuevoUsuario(dni);
 		}
 
 		return unUsuario;
 	}
 
-	public static Usuario nuevoUsuario(ArrayList<Usuario> baseClientes, int dni) {
+	public static Usuario nuevoUsuario(int dni) {
 
 		Scanner teclado = new Scanner(System.in);
 		String nombre, apellido;
@@ -127,8 +125,7 @@ public class Main {
 				System.out.println("Ingrese edad: ");
 				edad = teclado.nextInt();
 
-				Usuario nuevoUsuario = new Usuario(nombre, apellido, dni, edad);
-				return nuevoUsuario;
+				return new Usuario(nombre, apellido, dni, edad);
 
 			} catch (InputMismatchException e) {
 				System.out.println("Los datos ingresados son incorrectos: (" + e + ")");
@@ -227,7 +224,7 @@ public class Main {
 			System.out.println("Ingrese el numero del avion disponible que desee:");
 			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
 			if (flotaAviones.get(avion).enVuelo == true) {
-				System.out.println("EL avion esta ocupado en esa fecha, elija otro");
+				System.out.println("El avion esta ocupado en esa fecha, elija otro");
 			} else                                                            //Si no lo reserva cambiando enVuelo a true
 			{
 				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
