@@ -34,7 +34,7 @@ public class Main {
 		int opcionMenu;
 
 		do {
-			System.out.println("1- Contratar vuelo.\n" +
+			System.out.println("\n1- Contratar vuelo.\n" +
 					"2- Cancelar vuelo.\n" +
 					"3- Ver base de clientes.\n" +
 					"4- Ver vuelos programados.\n" +
@@ -130,68 +130,68 @@ public class Main {
 		}
 	}
 
-	public static void contratarVuelo() {
-		Scanner teclado = new Scanner(System.in);
-		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
-		LocalDate fecha = solicitarFecha();
-		// mostrar destinos que no coincidan con el origen
-		System.out.println("Seleccione origen:");
-		System.out.println("1- Buenos aires \n" +
-				"2- Cordoba \n" +
-				"3- Montevideo \n" +
-				"4- Santiago de chile \n");
-		Scanner nuevo = new Scanner(System.in);
-		int num = nuevo.nextInt();
-		Ciudad origen;
-		if (num == 1) {
-			origen = Ciudad.BUE;
-		}
-		if (num == 2) {
-			origen = Ciudad.COR;
-		}
-		if (num == 3) {
-			origen = Ciudad.MVD;
-		}
-		if (num == 4) {
-			origen = Ciudad.SCL;
-		}
-		int a = nuevo.nextInt();
-		Ciudad destino;
-		do {
-			System.out.println("Seleccione destino diferente al origen");
-			System.out.println("1- Buenos aires \n" +
-					"2- Cordoba \n" +
-					"3- Montevideo \n" +
-					"4- Santiago de chile \n");
-			if (num == 1) {
-				destino = Ciudad.BUE;
-			}
-			if (num == 2) {
-				destino = Ciudad.COR;
-			}
-			if (num == 3) {
-				destino = Ciudad.MVD;
-			}
-			if (num == 4) {
-				destino = Ciudad.SCL;
-			}
-		} while (origen == destino);
-		Main.mostrarAvionesDisp(fecha);
-		Avion reservado = new Avion();
-		reservado = Main.reservar();
-		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada);
-		float costo = vuelonuevo.calcularCosto();
-		System.out.println("El costo todal del vuelo es de :" + costo);
-		System.out.println("¿Que desea realizar?\n" +
-				"1- Contratar. \n" +
-				"2- Cancelar.");
-		Scanner conf = new Scanner(System.in);
-		int confirmacion = conf.nextInt();
-		if (confirmacion == 1) {
-			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
-			vuelosPactados.add(vuelonuevo);
-		}
-	}
+//	public static void contratarVuelo() {
+//		Scanner teclado = new Scanner(System.in);
+//		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
+//		LocalDate fecha = solicitarFecha();
+//		// mostrar destinos que no coincidan con el origen
+//		System.out.println("Seleccione origen:");
+//		System.out.println("1- Buenos aires \n" +
+//				"2- Cordoba \n" +
+//				"3- Montevideo \n" +
+//				"4- Santiago de chile \n");
+//		Scanner nuevo = new Scanner(System.in);
+//		int num = nuevo.nextInt();
+//		Ciudad origen;
+//		if (num == 1) {
+//			origen = Ciudad.BUE;
+//		}
+//		if (num == 2) {
+//			origen = Ciudad.COR;
+//		}
+//		if (num == 3) {
+//			origen = Ciudad.MVD;
+//		}
+//		if (num == 4) {
+//			origen = Ciudad.SCL;
+//		}
+//		int a = nuevo.nextInt();
+//		Ciudad destino;
+//		do {
+//			System.out.println("Seleccione destino diferente al origen");
+//			System.out.println("1- Buenos aires \n" +
+//					"2- Cordoba \n" +
+//					"3- Montevideo \n" +
+//					"4- Santiago de chile \n");
+//			if (num == 1) {
+//				destino = Ciudad.BUE;
+//			}
+//			if (num == 2) {
+//				destino = Ciudad.COR;
+//			}
+//			if (num == 3) {
+//				destino = Ciudad.MVD;
+//			}
+//			if (num == 4) {
+//				destino = Ciudad.SCL;
+//			}
+//		} while (origen == destino);
+//		Main.mostrarAvionesDisp(fecha);
+//		Avion reservado = new Avion();
+//		reservado = Main.reservar();
+//		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada);
+//		float costo = vuelonuevo.calcularCosto();
+//		System.out.println("El costo todal del vuelo es de :" + costo);
+//		System.out.println("¿Que desea realizar?\n" +
+//				"1- Contratar. \n" +
+//				"2- Cancelar.");
+//		Scanner conf = new Scanner(System.in);
+//		int confirmacion = conf.nextInt();
+//		if (confirmacion == 1) {
+//			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
+//			vuelosPactados.add(vuelonuevo);
+//		}
+//	}
 
 	public static LocalDate solicitarFecha() {
 		Scanner teclado = new Scanner(System.in);
@@ -201,10 +201,9 @@ public class Main {
 			try {
 				DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 				fecha = LocalDate.parse(teclado.nextLine(), formato);
-				System.out.println(fecha);
 				fechaOk = true;
 			} catch (DateTimeParseException e) {
-				System.out.println("Formato de fecha incorrecto.");
+				System.out.println("Formato de fecha incorrecto. Vuelva a ingresar:");
 				fechaOk = false;
 			}
 		}
@@ -213,54 +212,54 @@ public class Main {
 		return fecha;
 	}
 
-	public static Avion reservar() {
-		Scanner aviondes = new Scanner(System.in);
-		int flag = 0;
-		while (flag == 0) {                                                    //Pide el numero de avion a reservar
-			System.out.println("Ingrese el numero del avion disponible que desee:");
-			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
-			if (flotaAviones.get(avion).enVuelo == true) {
-				System.out.println("El avion esta ocupado en esa fecha, elija otro");
-			} else                                                            //Si no lo reserva cambiando enVuelo a true
-			{
-				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
-				flotaAviones.get(avion).enVuelo = true;
-				flag = 1;
-			}
-		}
-		return flotaAviones.get(avion);                                    //Devuelve el avion que se reservo
-	}
+//	public static Avion reservar() {
+//		Scanner aviondes = new Scanner(System.in);
+//		int flag = 0;
+//		while (flag == 0) {                                                    //Pide el numero de avion a reservar
+//			System.out.println("Ingrese el numero del avion disponible que desee:");
+//			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
+//			if (flotaAviones.get(avion).enVuelo == true) {
+//				System.out.println("El avion esta ocupado en esa fecha, elija otro");
+//			} else                                                            //Si no lo reserva cambiando enVuelo a true
+//			{
+//				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
+//				flotaAviones.get(avion).enVuelo = true;
+//				flag = 1;
+//			}
+//		}
+//		return flotaAviones.get(avion);                                    //Devuelve el avion que se reservo
+//	}
 
 	//Tratar de que solo muestre los aviones disponibles
-	public static void mostrarAvionesDisp(LocalDate fecha) {
-		int a = flotaAviones.size();
-		int j = vuelosPactados.size();
-		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
-		{
-			System.out.println("Avion n*" + i);
-			System.out.println(flotaAviones.get(i).tostring());   //la imprime
-			int flag = 0;
-			int p = 0;
-			while (flag == 0 && a <= j)                                                //recorre los vuelos pactados
-			{
-				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
-				{
-					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado enVuelo pasa a ser true
-						System.out.println("Avion no disponible para esa fecha");
-						flag = 1;
-						flotaAviones.get(i).enVuelo = true;
-					}
-					if (fecha == vuelosPactados.get(p).llegada) {
-						System.out.println("Avion no disponible para esa fecha");
-						flag = 1;
-						flotaAviones.get(i).enVuelo = true;
-					}
-				}
-				a++;
-			}
-
-		}
-	}
+//	public static void mostrarAvionesDisp(LocalDate fecha) {
+//		int a = flotaAviones.size();
+//		int j = vuelosPactados.size();
+//		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
+//		{
+//			System.out.println("Avion n*" + i);
+//			System.out.println(flotaAviones.get(i).tostring());   //la imprime
+//			int flag = 0;
+//			int p = 0;
+//			while (flag == 0 && a <= j)                                                //recorre los vuelos pactados
+//			{
+//				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+//				{
+//					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado enVuelo pasa a ser true
+//						System.out.println("Avion no disponible para esa fecha");
+//						flag = 1;
+//						flotaAviones.get(i).enVuelo = true;
+//					}
+//					if (fecha == vuelosPactados.get(p).llegada) {
+//						System.out.println("Avion no disponible para esa fecha");
+//						flag = 1;
+//						flotaAviones.get(i).enVuelo = true;
+//					}
+//				}
+//				a++;
+//			}
+//
+//		}
+//	}
 
 	public static void listarClientes(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados) {
 		if (!baseClientes.isEmpty()) {
@@ -273,10 +272,15 @@ public class Main {
 	}
 
 	public static void verVuelos(ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
+		boolean existenVuelos = false;
 		for (Vuelo aux : vuelosPactados) {
-			if (aux.getPartida().equals(fecha))
+			if (aux.getPartida().equals(fecha)) {
 				System.out.println(aux);
+				existenVuelos = true;
+			}
 		}
+		if(!existenVuelos)
+			System.out.println("El cliente no posee vuelos pactados.");
 	}
 
 	public static String mejorAvionUsado(ArrayList<Vuelo> vuelosPactados,Usuario unUsuario){

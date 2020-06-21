@@ -21,6 +21,7 @@ public class Archivo<T> {
 				ObjectInputStream entradaObjeto = new ObjectInputStream(flujoEntrada);
 
 				boolean finArchivo = false;
+
 				while (!finArchivo) {
 					T leido = (T)entradaObjeto.readObject();
 					if (leido != null) {
@@ -37,26 +38,28 @@ public class Archivo<T> {
 			}
 		}
 
-
 		return base;
 	}
 
 	public void persistir(ArrayList<T> base) {
-		File archivo = new File(archivoBase);
-		if (archivo.exists()) {
-		 	FileOutputStream flujoSalida = null;
-			try {
-				flujoSalida = new FileOutputStream(archivo);
-				ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
 
-				for (T aux : base) {
-					salidaObjeto.writeObject(aux);
-				}
-				flujoSalida.close();
-			} catch (IOException e) {
-				System.out.println("No se puede leer la base de datos: " + e.getMessage());
-				e.printStackTrace();
+		File archivo = new File(archivoBase);
+
+		try {
+			if (!archivo.exists())
+				archivo.createNewFile();
+
+			FileOutputStream flujoSalida = new FileOutputStream(archivo);
+			ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
+
+			for (T aux : base) {
+				salidaObjeto.writeObject(aux);
 			}
+			salidaObjeto.close();
+			flujoSalida.close();
+		} catch (IOException e) {
+			System.out.println("No se puede leer la base de datos: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

@@ -42,7 +42,7 @@ public class Usuario implements Serializable {
     }
 
     public String toString(){
-        return "[USUARIO] \n Nombre: " + this.nombre + "\n Apellido: " + this.apellido +
-                "\n Edad: " + this.edad + "\n DNI: " + this.dni ;
+        return "[USUARIO] Nombre: " + this.nombre + " " + this.apellido +
+                ", Edad: " + this.edad + ", DNI: " + this.dni ;
     }
 }
