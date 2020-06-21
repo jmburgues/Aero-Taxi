@@ -1,73 +1,35 @@
 package com.company;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-	/* CORRECCIONES:
-	Verificar la utilidad del boolean "enVuelo" de la clase Avion.
-	Para comprobar si esta disponible en una fecha dada debería implementarse una busqueda
-	en vuelosPactados y si existe devolver false. El atributo de clase enVuelo no serviría.
-	 */
-	public static final String ARCHIVO_BASE = "baseDatos.dat";
-
 	public static void main(String[] args) {
 
-		// declaro bases de datos en memoria
-		ArrayList<Usuario> baseClientes = new ArrayList<>();
-		ArrayList<Avion> flotaAviones = new ArrayList<>();
-		ArrayList<Vuelo> vuelosPactados = new ArrayList<>();
+		// declaro archivos de respaldo
+		Archivo<Usuario> clientesFile = new Archivo<>("baseClientes.dat");
+		Archivo<Avion> avionesFile = new Archivo<>("flotaAviones.dat");
+		Archivo<Vuelo> vuelosFile = new Archivo<>("vuelosPactados.dat");
 
-		// leo persistencias en archivos y cargo las bases en memoria
-		File archivo = new File(ARCHIVO_BASE);
-		if (archivo.exists()) {
-			try {
-				FileInputStream flujoEntrada = new FileInputStream(archivo);
-				ObjectInputStream entradaObjeto = new ObjectInputStream(flujoEntrada);
-
-				boolean finArchivo = false;
-				while (!finArchivo) {
-					Object leido = entradaObjeto.readObject();
-					if (leido != null) {
-						if (leido instanceof Usuario)
-							baseClientes.add((Usuario) leido);
-						else if (leido instanceof Avion)
-							flotaAviones.add((Avion) leido);
-						else if (leido instanceof Vuelo)
-							vuelosPactados.add((Vuelo) leido);
-					} else
-						finArchivo = true;
-				}
-			} catch (IOException | ClassNotFoundException e) {
-				System.out.println("No se puede leer la base de datos: " + e.getMessage());
-				e.printStackTrace();
-			} finally {
-//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			}
-		} else { // si no hay archivo, cargo datos de ejemplo
-			flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
-			flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
-			flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
-		}
+		// declaro base de datos en memoria ppal y recupero datos de archivo
+		ArrayList<Avion> flotaAviones = avionesFile.recuperar();
+		ArrayList<Usuario> baseClientes = clientesFile.recuperar();
+		ArrayList<Vuelo> vuelosPactados = vuelosFile.recuperar();
 
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
-
 		int dni = Main.solicitarDni();
-		Usuario usuarioAutorizado = obtenerUsr(baseClientes, dni);
+		Usuario usuarioValidado = obtenerUsr(baseClientes, dni);
+
+		if(!baseClientes.contains(usuarioValidado)){
+			baseClientes.add(usuarioValidado);
+			clientesFile.persistir(baseClientes);
+		}
+
 		Scanner teclado = new Scanner(System.in);
 		int opcionMenu;
 
@@ -96,7 +58,8 @@ public class Main {
 					 */
 					break;
 				case 4:
-					/* metodo ver vuelos programados */
+					LocalDate fecha = solicitarFecha();
+					Main.verVuelos(vuelosPactados,fecha);
 					break;
 			}
 		}
@@ -108,7 +71,7 @@ public class Main {
 		Scanner teclado = new Scanner(System.in);
 
 		int dni = 0;
-		boolean dniInvalido;
+		boolean dniInvalido = false;
 
 		do {
 			try {
@@ -149,11 +112,11 @@ public class Main {
 		return unUsuario;
 	}
 
-	public static Usuario nuevoUsuario() {
+	public static Usuario nuevoUsuario(ArrayList<Usuario> baseClientes, int dni) {
 
 		Scanner teclado = new Scanner(System.in);
 		String nombre, apellido;
-		int dni, edad;
+		int edad;
 
 		while (true) {
 			try {
@@ -161,12 +124,11 @@ public class Main {
 				nombre = teclado.nextLine();
 				System.out.println("Ingrese apellido: ");
 				apellido = teclado.nextLine();
-				System.out.println("Ingrese DNI: ");
-				dni = teclado.nextInt();
 				System.out.println("Ingrese edad: ");
 				edad = teclado.nextInt();
 
-				return new Usuario(nombre, apellido, dni, edad);
+				Usuario nuevoUsuario = new Usuario(nombre, apellido, dni, edad);
+				return nuevoUsuario;
 
 			} catch (InputMismatchException e) {
 				System.out.println("Los datos ingresados son incorrectos: (" + e + ")");
@@ -177,8 +139,8 @@ public class Main {
 
 	public static void contratarVuelo() {
 		Scanner teclado = new Scanner(System.in);
-		System.out.println("Ingrese fecha y hora de partida (aaaa-mm-dd hh:mm): ");
-		LocalDateTime fecha = solicitarFechayHora();
+		System.out.println("Ingrese fecha y hora de partida (aaaa-mm-dd): ");
+		LocalDate fecha = solicitarFecha();
 		// mostrar destinos que no coincidan con el origen
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
@@ -238,18 +200,18 @@ public class Main {
 		}
 	}
 
-	public static LocalDateTime solicitarFechayHora() {
+	public static LocalDate solicitarFecha() {
 		Scanner teclado = new Scanner(System.in);
-		LocalDateTime fecha = null;
+		LocalDate fecha = null;
 		boolean fechaOk;
 		do {
 			try {
-				DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-				fecha = LocalDateTime.parse(teclado.nextLine(), formato);
+				DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				fecha = LocalDate.parse(teclado.nextLine(), formato);
 				System.out.println(fecha);
 				fechaOk = true;
 			} catch (DateTimeParseException e) {
-				System.out.println("Formato de fecha incorrecto. Año-mes-dia hora:minutos");
+				System.out.println("Formato de fecha incorrecto.");
 				fechaOk = false;
 			}
 		}
@@ -277,7 +239,7 @@ public class Main {
 	}
 
 	//Tratar de que solo muestre los aviones disponibles
-	public static void mostrarAvionesDisp(String fecha) {
+	public static void mostrarAvionesDisp(LocalDate fecha) {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
 		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
@@ -316,32 +278,10 @@ public class Main {
 			System.out.println("La base de clientes está vacía.");
 	}
 
-	public static void persistirEnArchivo(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> flotaAviones) {
-		File archivo = new File(ARCHIVO_BASE);
-		if (archivo.exists()) {
-			try {
-				FileOutputStream flujoSalida = new FileOutputStream(archivo);
-				ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
-
-				for (Usuario aux : baseClientes) {
-					salidaObjeto.writeObject(aux);
-				}
-				for (Vuelo aux : vuelosPactados) {
-					salidaObjeto.writeObject(aux);
-				}
-				for (Avion aux : flotaAviones) {
-					salidaObjeto.writeObject(aux);
-				}
-			} catch (IOException e) {
-				System.out.println("No se puede leer la base de datos: " + e.getMessage());
-				e.printStackTrace();
-			} finally {
-			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			//************************* NO ME DEJA CERRAR EL STREAM. *****************************
-			}
+	public static void verVuelos(ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
+		for (Vuelo aux : vuelosPactados) {
+			if (aux.getPartida().equals(fecha))
+				System.out.println(aux);
 		}
 	}
 }

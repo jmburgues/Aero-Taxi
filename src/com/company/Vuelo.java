@@ -1,7 +1,8 @@
 package com.company;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,16 +10,16 @@ public class Vuelo implements Serializable {
     public Ciudad origen;
     public Ciudad destino;
     public Avion tipoAvion;
-    public LocalDateTime partida;
-    public LocalDateTime llegada;
+    public LocalDate partida;
+    public LocalDate llegada;
     public ArrayList<Usuario> pasajeros;
 
-    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDateTime partida) {
+    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida) {
         this.origen = origen;
         this.destino = destino;
         this.tipoAvion = tipoAvion;
         this.partida = partida;
-        this.llegada = partida.plusHours(this.obtenerDistancia() / this.tipoAvion.getVelocidadMax());
+        this.llegada = partida.plusDays((int) this.obtenerDistancia() / this.tipoAvion.getVelocidadMax() / 60);
         this.pasajeros = new ArrayList<Usuario>();
     }
 
@@ -80,19 +81,19 @@ public class Vuelo implements Serializable {
         this.tipoAvion = tipoAvion;
     }
 
-    public LocalDateTime getPartida() {
+    public LocalDate getPartida() {
         return partida;
     }
 
-    public void setPartida(LocalDateTime partida) {
+    public void setPartida(LocalDate partida) {
         this.partida = partida;
     }
 
-    public LocalDateTime getLlegada() {
+    public LocalDate getLlegada() {
         return llegada;
     }
 
-    public void setLlegada(LocalDateTime llegada) {
+    public void setLlegada(LocalDate llegada) {
         this.llegada = llegada;
     }
 
