@@ -19,7 +19,7 @@ public class Gold extends Avion implements Serializable {
 
     public Gold (){}
 
-    public Gold (int combustible,int capacidadMax,Propulsion propulsion, boolean wifi, boolean catering)
+    public Gold (int combustible,int capacidadMax,Propulsion propulsion, boolean enVuelo, boolean wifi, boolean catering)
     {
         super(combustible, capacidadMax, propulsion);
         this.wifi = wifi;
