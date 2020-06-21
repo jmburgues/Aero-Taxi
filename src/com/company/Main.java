@@ -20,6 +20,18 @@ public class Main {
 		ArrayList<Usuario> baseClientes = clientesFile.recuperar();
 		ArrayList<Vuelo> vuelosPactados = vuelosFile.recuperar();
 
+		// creo los Aviones por primera vez
+		if(flotaAviones.isEmpty()){
+			flotaAviones.add(new Gold(15000,5,Propulsion.REACCION,true,true));
+			flotaAviones.add(new Gold(10000,20,Propulsion.REACCION, true,true));
+			flotaAviones.add(new Gold(10000,20,Propulsion.PISTONES,true,false));
+			flotaAviones.add(new Silver(5000,15,Propulsion.PISTONES,true));
+			flotaAviones.add(new Silver(6000,10,Propulsion.HELICE,false));
+			flotaAviones.add(new Bronze(8000,30,Propulsion.HELICE));
+			flotaAviones.add(new Bronze(9500,15,Propulsion.PISTONES));
+			avionesFile.persistir(flotaAviones);
+		}
+
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
 		int dni = Main.solicitarDni();
@@ -34,7 +46,8 @@ public class Main {
 		int opcionMenu;
 
 		do {
-			System.out.println("\n1- Contratar vuelo.\n" +
+			System.out.println("\nBienvenido/a " + usuarioValidado.getNombre() + ", elija la opción deseada: " +
+					"\n1- Contratar vuelo.\n" +
 					"2- Cancelar vuelo.\n" +
 					"3- Ver base de clientes.\n" +
 					"4- Ver vuelos programados.\n" +
@@ -79,7 +92,7 @@ public class Main {
 				dniInvalido = true;
 			}
 		}
-		while (dniInvalido || (dni < 1000000 && dni > 60000000));
+		while (dniInvalido);
 
 		return dni;
 	}
@@ -92,6 +105,7 @@ public class Main {
 			for (Usuario auxUsuario : baseClientes) {
 				if (auxUsuario != null && auxUsuario.getDni() == dni) {
 					usrRegistrado = true;
+					unUsuario = auxUsuario;
 					break;
 				}
 			}
@@ -264,8 +278,10 @@ public class Main {
 	public static void listarClientes(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados) {
 		if (!baseClientes.isEmpty()) {
 			for (Usuario auxCliente : baseClientes) {
-				System.out.println(auxCliente);
-				System.out.println(mejorAvionUsado(vuelosPactados,auxCliente));
+				if(auxCliente != null) {
+					System.out.println(auxCliente);
+					System.out.println(mejorAvionUsado(vuelosPactados, auxCliente));
+				}
 			}
 		} else
 			System.out.println("La base de clientes está vacía.");
@@ -280,7 +296,7 @@ public class Main {
 			}
 		}
 		if(!existenVuelos)
-			System.out.println("El cliente no posee vuelos pactados.");
+			System.out.println("No existen vuelos programados para la fecha " + fecha);
 	}
 
 	public static String mejorAvionUsado(ArrayList<Vuelo> vuelosPactados,Usuario unUsuario){

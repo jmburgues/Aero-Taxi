@@ -7,7 +7,7 @@ public class Bronze extends Avion implements Serializable {
 
     public Bronze (){}
 
-    public Bronze (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo)
+    public Bronze (int combustible,int capacidadMax, Propulsion propulsion)
     {
         super(combustible, capacidadMax, propulsion);
         this.tarifa = 3000;
