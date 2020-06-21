@@ -50,14 +50,10 @@ public class Main {
 					/* metodo cancelar vuelo */
 					break;
 				case 3:
-					Main.listarClientes(baseClientes);
-					/* falta agregar:
-						Todos los datos personales.
-						La categoría del mejor avión utilizado (Gold, Silver o Bronze).
-						Total gastado de todos sus vuelos.
-					 */
+					Main.listarClientes(baseClientes,vuelosPactados);
 					break;
 				case 4:
+					System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
 					LocalDate fecha = solicitarFecha();
 					Main.verVuelos(vuelosPactados,fecha);
 					break;
@@ -136,7 +132,7 @@ public class Main {
 
 	public static void contratarVuelo() {
 		Scanner teclado = new Scanner(System.in);
-		System.out.println("Ingrese fecha y hora de partida (aaaa-mm-dd): ");
+		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
 		LocalDate fecha = solicitarFecha();
 		// mostrar destinos que no coincidan con el origen
 		System.out.println("Seleccione origen:");
@@ -266,10 +262,11 @@ public class Main {
 		}
 	}
 
-	public static void listarClientes(ArrayList<Usuario> base) {
-		if (!base.isEmpty()) {
-			for (Usuario aux : base) {
-				System.out.println(aux);
+	public static void listarClientes(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados) {
+		if (!baseClientes.isEmpty()) {
+			for (Usuario auxCliente : baseClientes) {
+				System.out.println(auxCliente);
+				System.out.println(mejorAvionUsado(vuelosPactados,auxCliente));
 			}
 		} else
 			System.out.println("La base de clientes está vacía.");
@@ -281,4 +278,33 @@ public class Main {
 				System.out.println(aux);
 		}
 	}
+
+	public static String mejorAvionUsado(ArrayList<Vuelo> vuelosPactados,Usuario unUsuario){
+
+		String mejorAvion = "El cliente no ha contratado vuelos aun.";
+		boolean silver = false;
+
+		for(Vuelo unVuelo : vuelosPactados){
+			if(unVuelo.getClienteContratante().equals(unUsuario)){
+				Avion unAvion = unVuelo.getTipoAvion();
+				if(unAvion instanceof Gold) {
+					mejorAvion = "El cliente ha contratado categoria Gold";
+					break;
+				}
+				else if(unAvion instanceof Silver) {
+					mejorAvion = "El cliente ha contratado hasta categoria Silver";
+					silver = true;
+				}
+				else if(unAvion instanceof Bronze && !silver)
+					mejorAvion = "El cliente ha contratado hasta categoria Bronze";
+			}
+		}
+
+		return mejorAvion;
+	}
 }
+
+/*
+* FALTA PONER UN TOPE DE PASAJEROS EN EL AVION
+*
+* */

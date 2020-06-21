@@ -11,7 +11,7 @@ public class Silver extends Avion implements Serializable {
 
     public Silver (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo, boolean wifi)
     {
-        super(combustible, capacidadMax, propulsion, enVuelo);
+        super(combustible, capacidadMax, propulsion);
         this.tarifa = 4000;
         this.wifi = wifi;
     }
@@ -29,11 +29,6 @@ public class Silver extends Avion implements Serializable {
     @Override
     public void setPropulsion(Propulsion propulsion) {
         super.setPropulsion(propulsion);
-    }
-
-    @Override
-    public void setDisponible(boolean disponible) {
-        super.setDisponible(disponible);
     }
 
     @Override

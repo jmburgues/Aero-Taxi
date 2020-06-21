@@ -12,31 +12,21 @@ public class Vuelo implements Serializable {
     public Avion tipoAvion;
     public LocalDate partida;
     public LocalDate llegada;
-    public ArrayList<Usuario> pasajeros;
+    public int cantPasajeros;
+    public Usuario clienteContratante;
 
-    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida) {
+    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida, int cantPasajeros, Usuario clienteContratante) {
         this.origen = origen;
         this.destino = destino;
         this.tipoAvion = tipoAvion;
         this.partida = partida;
         this.llegada = partida.plusDays((int) this.obtenerDistancia() / this.tipoAvion.getVelocidadMax() / 60);
-        this.pasajeros = new ArrayList<Usuario>();
-    }
-
-    public int agregarPasajero(Usuario pasajero){
-        // agrega un pasajero al vuelo y devuelve total de pasajeros o -1 si no pudo agregar
-        int rta = -1;
-            if(this.pasajeros.add(pasajero))
-                rta = this.pasajeros.size();
-        return rta;
-    }
-
-    public boolean eliminarPasajero(Usuario pasajero){
-        return this.pasajeros.remove(pasajero);
+        this.cantPasajeros = cantPasajeros;
+        this.clienteContratante = clienteContratante;
     }
 
     public int obtenerDistancia(){
-		HashMap<Integer,Integer> tablaDistancias = new HashMap<Integer, Integer>();
+		HashMap<Integer,Integer> tablaDistancias = new HashMap<>();
 
 		tablaDistancias.put((Ciudad.BUE).hashCode()+(Ciudad.COR).hashCode(),695);
 		tablaDistancias.put((Ciudad.BUE).hashCode()+(Ciudad.SCL).hashCode(),1400);
@@ -60,63 +50,38 @@ public class Vuelo implements Serializable {
         else if (tipoAvion instanceof Bronze)
             tarifa = ((Bronze) tipoAvion).getTarifa();
 
-        return (( this.obtenerDistancia() * this.tipoAvion.getCostoXkm() ) + ( this.pasajeros.size() * 3500 ) + tarifa );
-    }
-
-    public int cantidadPasajeros(){
-        return this.pasajeros.size();
-    }
-
-    public void listarPasajeros(){
-        for(Usuario unUsuario : pasajeros){
-            System.out.println(unUsuario);
-        }
+        return (( this.obtenerDistancia() * this.tipoAvion.getCostoXkm() ) + ( cantPasajeros * 3500 ) + tarifa );
     }
 
     public Avion getTipoAvion() {
         return tipoAvion;
     }
 
-    public void setTipoAvion(Avion tipoAvion) {
-        this.tipoAvion = tipoAvion;
-    }
-
-    public LocalDate getPartida() {
-        return partida;
-    }
-
-    public void setPartida(LocalDate partida) {
-        this.partida = partida;
-    }
-
-    public LocalDate getLlegada() {
-        return llegada;
-    }
-
-    public void setLlegada(LocalDate llegada) {
-        this.llegada = llegada;
-    }
 
     public Ciudad getOrigen() {
         return origen;
     }
 
-    public void setOrigen(Ciudad origen) {
-        this.origen = origen;
+    public LocalDate getPartida(){
+        return partida;
     }
 
     public Ciudad getDestino() {
         return destino;
     }
 
-    public void setDestino(Ciudad destino) {
-        this.destino = destino;
+    public int getCantPasajeros() {
+        return cantPasajeros;
+    }
+
+    public Usuario getClienteContratante() {
+        return clienteContratante;
     }
 
     @Override
     public String toString(){
         return ("[VUELO] " + this.origen + " - " + this.destino + ": Partida: " + this.partida +
-                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantidadPasajeros());
+                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantPasajeros);
     }
 }
 

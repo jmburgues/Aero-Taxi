@@ -21,7 +21,7 @@ public class Gold extends Avion implements Serializable {
 
     public Gold (int combustible,int capacidadMax,Propulsion propulsion, boolean enVuelo, boolean wifi, boolean catering)
     {
-        super(combustible, capacidadMax, propulsion, enVuelo);
+        super(combustible, capacidadMax, propulsion);
         this.wifi = wifi;
         this.catering = catering;
         this.tarifa = 6000;
@@ -45,11 +45,6 @@ public class Gold extends Avion implements Serializable {
     @Override
     public void setCostoXkm(float costoXkm) {
         super.setCostoXkm(costoXkm);
-    }
-
-    @Override
-    public void setDisponible(boolean disponible) {
-        super.setDisponible(disponible);
     }
 
     @Override
