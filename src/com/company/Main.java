@@ -1,5 +1,6 @@
 package com.company;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -44,11 +45,11 @@ public class Main {
 
 			switch (opcionMenu) {
 				case 1:
-					/* metodo contratar vuelo */
+					Main.contratarVuelo(vuelosPactados, flotaAviones, baseClientes);
 					break;
 				case 2:
 					/* metodo cancelar vuelo */
-					bre
+					break;
 				case 3:
 					Main.listarClientes(baseClientes,vuelosPactados);
 					break;
@@ -133,6 +134,7 @@ public class Main {
 	public static void contratarVuelo(ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> aviones, ArrayList<Usuario> usuarios) {
 		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
 		LocalDate fecha = solicitarFecha();
+		LocalDate llegada = fecha;
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
 				"2- Cordoba \n" +
@@ -140,8 +142,8 @@ public class Main {
 				"4- Santiago de chile \n");
 		Scanner nuevo = new Scanner(System.in);
 		int num = nuevo.nextInt();
-		Ciudad origen;
-		Ciudad destino;
+		Ciudad origen = null;
+		Ciudad destino = null;
 		switch (num){
 			case 1:
 				origen = Ciudad.BUE;
@@ -231,14 +233,14 @@ public class Main {
 
 				}
 				break;
+			default:
+
 		}
-		Main.mostrarAvionesDisp(vuelosPactados, aviones, fecha);
-		Avion reservado = new Avion();
-		reservado = Main.reservar();
+		ArrayList<Integer>IDSarray = Main.mostrarAvionesDisp(aviones, vuelosPactados, fecha);
+		Avion reservado = Main.reservar(aviones, IDSarray);
 		int cantpas = Main.cantPasajeros(reservado);
 		int dni = Main.solicitarDni();
-		Usuario nuevoUser = new Usuario();
-		nuevoUser = Main.obtenerUsr(usuarios, dni);
+		Usuario nuevoUser = Main.obtenerUsr(usuarios, dni);
 		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada, cantpas, nuevoUser);
 		float costo = vuelonuevo.calcularCosto();
 		System.out.println("El costo todal del vuelo es de :" + costo);
@@ -251,14 +253,18 @@ public class Main {
 			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
 			vuelosPactados.add(vuelonuevo);
 		}
+		else {
+			System.out.println("Vuelo cancelado con exito");
+		}
 	}
+
 
 	public static int cantPasajeros (Avion reservado)
 	{
 		int i = 1;
 		int flag = 0;
 		while (flag == 0) {
-			System.out.println("¿Numero de acompañantes?");
+			System.out.println("¿Numero de acompañantes? maximo de personas en este avion: " + reservado.getCapacidadMax());
 			Scanner acomp = new Scanner(System.in);
 			int num = acomp.nextInt();
 			if (num+1 > reservado.getCapacidadMax())
@@ -294,55 +300,66 @@ public class Main {
 		return fecha;
 	}
 
-	public static Avion reservar(ArrayList<Avion>flotaAviones, int avion) {
+	public static Avion reservar(ArrayList<Avion>flotaAviones, ArrayList<Integer> listaIDS) {
 		Scanner aviondes = new Scanner(System.in);
+		int id;
+		//Pide el numero de avion a reservar
 		int flag = 0;
-		while (flag == 0) {                                                    //Pide el numero de avion a reservar
-			System.out.println("Ingrese el numero del avion disponible que desee:");
-			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
-			if (flotaAviones.get(avion).setEnVuelo(true)) {
-				System.out.println("El avion esta ocupado en esa fecha, elija otro");
-			} else                                                            //Si no lo reserva cambiando enVuelo a true
+		System.out.println("Ingrese el ID del avion que desee:");
+		do {
+			id = aviondes.nextInt();
+			flag = Main.comprobarId(id,listaIDS);
+			if(flag == 0)
 			{
-				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
-				flotaAviones.get(avion).setEnVuelo(true);
-				flag = 1;
+				System.out.println("El numero ingresado no es un id valido de un avion disponible. Vuelva a ingresar un id valido:");
 			}
-		}																	
-		return flotaAviones.get(avion); 		 		 		 	 		//Devuelve el avion que se reservo
+		}while (flag == 0);
+		return flotaAviones.get(id); 		 		 		 	 		//Devuelve el avion que se reservo
 
 	}
-	/*
+	public static int comprobarId(int id, ArrayList<Integer> listaIDs)
+	{
+		int flag = 0;
+		for (int i = 0; i<= listaIDs.size(); i++){
+			if(id == listaIDs.get(i))
+			{
+				flag++;
+			}
+		}
+		return flag;
+	}
+
 	//Tratar de que solo muestre los aviones disponibles
-	public static void mostrarAvionesDisp(ArrayList<Avion> flotaAviones, ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
+	public static ArrayList<Integer> mostrarAvionesDisp(ArrayList<Avion> flotaAviones, ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
+		ArrayList<Integer> Ides = new ArrayList<>();
 		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
 		{
-			System.out.println("Avion n*" + i);
-			System.out.println(flotaAviones.get(i).tostring());   //la imprime
+
 			int flag = 0;
 			int p = 0;
-			while (flag == 0 && a <= j)                                                //recorre los vuelos pactados
+			while (flag == 0 && p <= j)                                                //recorre los vuelos pactados
 			{
 				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
-					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado enVuelo pasa a ser true
-						System.out.println("Avion no disponible para esa fecha");
+					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado flag cambia a 1
 						flag = 1;
-						flotaAviones.get(i). = true;
 					}
-					if (fecha == vuelosPactados.get(p).llegada) {
-						System.out.println("Avion no disponible para esa fecha");
-						flag = 1;
-						flotaAviones.get(i).enVuelo = true;
-					}
+
 				}
-				a++;
+				p++;
+			}
+			if (flag == 0)
+			{
+				System.out.println("Avion id n* "+ i);
+				System.out.println(flotaAviones.get(i).toString());
+				Ides.add(i);
 			}
 
 		}
-	}*/
+		return Ides;
+	}
 
 	public static void listarClientes(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados) {
 		if (!baseClientes.isEmpty()) {
