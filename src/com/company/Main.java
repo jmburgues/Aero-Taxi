@@ -1,173 +1,127 @@
 package com.company;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
-import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
+	public static void main(String[] args) {
 
-	/* CORRECCIONES:
-	Verificar la utilidad del boolean "enVuelo" de la clase Avion.
-	Para comprobar si esta disponible en una fecha dada debería implementarse una busqueda
-	en vuelosPactados y si existe devolver false. El atributo de clase enVuelo no serviría.
-	 */
+		// declaro archivos de respaldo
+		Archivo<Usuario> clientesFile = new Archivo<>("baseClientes.dat");
+		Archivo<Avion> avionesFile = new Archivo<>("flotaAviones.dat");
+		Archivo<Vuelo> vuelosFile = new Archivo<>("vuelosPactados.dat");
 
-    public static void main(String[] args) {
-
-    	// declaro bases de datos en memoria
-		ArrayList<Usuario> baseClientes = new ArrayList<>();
-		ArrayList<Avion> flotaAviones = new ArrayList<>();
-		ArrayList<Vuelo> vuelosPactados = new ArrayList<>();
-
-		// leo persistencias en archivos y cargo las bases en memoria
-		File archivo = new File("baseDatos.dat");
-		try {
-			if (archivo.exists()) {
-				FileInputStream flujoEntrada = new FileInputStream(archivo);
-				ObjectInputStream entradaObjeto = new ObjectInputStream(flujoEntrada);
-
-				boolean finArchivo = false;
-				while (!finArchivo) {
-					Object aux = entradaObjeto.readObject();
-					if (aux != null) {
-						if (aux instanceof Usuario)
-							baseClientes.add((Usuario) aux);
-						else if (aux instanceof Avion)
-							flotaAviones.add((Avion) aux);
-						else if (aux instanceof Vuelo)
-							vuelosPactados.add((Vuelo) aux);
-					} else
-						finArchivo = true;
-				}
-			}
-			else { // si no hay archivo, cargo datos de ejemplo
-				flotaAviones.add(new Gold(10000, 30, Propulsion.REACCION, false, true, true));
-				flotaAviones.add(new Gold(7000, 20, Propulsion.PISTONES, false, true, true));
-				flotaAviones.add(new Silver(3000, 15, Propulsion.HELICE, false, true));
-			}
-		}catch(IOException | ClassNotFoundException e){
-			System.out.println("No se puede leer la base de datos: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		File file = new File("");
-		ObjectMapper
+		// declaro base de datos en memoria ppal y recupero datos de archivo
+		ArrayList<Avion> flotaAviones = avionesFile.recuperar();
+		ArrayList<Usuario> baseClientes = clientesFile.recuperar();
+		ArrayList<Vuelo> vuelosPactados = vuelosFile.recuperar();
 
 		// Interfaz del usuario
 		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
+		int dni = Main.solicitarDni();
+		Usuario usuarioValidado = obtenerUsr(baseClientes, dni);
 
-		Usuario usrLogin = Main.authLogin(baseClientes);
-
-		if (usrLogin != null) {
-			Scanner teclado = new Scanner(System.in);
-			int opcionMenu;
-
-			do {
-				System.out.println("1- Contratar vuelo.\n" +
-						"2- Cancelar vuelo.\n" +
-						"3- Ver base de clientes.\n" +
-						"4- Ver vuelos programados.\n" +
-						"5- Salir");
-
-				try {
-					opcionMenu = teclado.nextInt();
-				} catch (InputMismatchException mensaje) {
-					System.out.println("El valor ingresado debe ser un numero");
-					opcionMenu = 0;
-				}
-
-				switch (opcionMenu) {
-					case 1:
-						/* metodo contratar vuelo */
-						break;
-					case 2:
-						/* metodo cancelar vuelo */
-						break;
-					case 3:
-						Main.listarClientes(baseClientes);
-						/* falta agregar:
-							Todos los datos personales.
-							La categoría del mejor avión utilizado (Gold, Silver o Bronze).
-							Total gastado de todos sus vuelos.
-						 */
-						break;
-					case 4:
-						/* metodo ver vuelos programados */
-						break;
-					default:
-						break;
-				}
-			}
-			while (opcionMenu != 5);
+		if(!baseClientes.contains(usuarioValidado)){
+			baseClientes.add(usuarioValidado);
+			clientesFile.persistir(baseClientes);
 		}
+
+		Scanner teclado = new Scanner(System.in);
+		int opcionMenu;
+
+		do {
+			System.out.println("1- Contratar vuelo.\n" +
+					"2- Cancelar vuelo.\n" +
+					"3- Ver base de clientes.\n" +
+					"4- Ver vuelos programados.\n" +
+					"5- Salir");
+
+			opcionMenu = teclado.nextInt();
+
+			switch (opcionMenu) {
+				case 1:
+					/* metodo contratar vuelo */
+					break;
+				case 2:
+					/* metodo cancelar vuelo */
+					bre
+				case 3:
+					Main.listarClientes(baseClientes,vuelosPactados);
+					break;
+				case 4:
+					System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
+					LocalDate fecha = solicitarFecha();
+					Main.verVuelos(vuelosPactados,fecha);
+					break;
+			}
+		}
+		while (opcionMenu != 5);
 	}
 
-
 	// funciones de la clase Main
-    public static Usuario authLogin(ArrayList<Usuario> baseClientes){
+	public static int solicitarDni() {
+		Scanner teclado = new Scanner(System.in);
 
-			Scanner teclado = new Scanner(System.in);
+		int dni = 0;
+		boolean dniInvalido;
 
-			int dni = 0;
-			boolean dniInvalido;
+		do {
+			try {
+				System.out.println("Ingrese su DNI: ");
+				dni = teclado.nextInt();
+				dniInvalido = false;
+			} catch (InputMismatchException e) {
+				System.out.println("Ingrese un valor numerico valido.");
+				dniInvalido = true;
+			}
+		}
+		while (dniInvalido || (dni < 1000000 && dni > 60000000));
 
-			do{
-				try {
-					System.out.println("Ingrese su DNI: ");
-					dni = teclado.nextInt();
-					dniInvalido = false;
-				} catch (InputMismatchException e) {
-					System.out.println("Ingrese un valor numerico valido.");
-					dniInvalido = true;
+		return dni;
+	}
+
+	public static Usuario obtenerUsr(ArrayList<Usuario> baseClientes, int dni) {
+		Usuario unUsuario = null;
+		boolean usrRegistrado = false;
+
+		if (!baseClientes.isEmpty()) {
+			for (Usuario auxUsuario : baseClientes) {
+				if (auxUsuario != null && auxUsuario.getDni() == dni) {
+					usrRegistrado = true;
+					break;
 				}
 			}
-			while(dniInvalido);
-
-			Usuario unUsuario = null;
-			boolean usrRegistrado = false;
-
-			if(!baseClientes.isEmpty()) {
-				for (int i = 0; i < baseClientes.size(); i++) {
-					unUsuario = baseClientes.get(i);
-					if (unUsuario != null && unUsuario.getDni() == dni) {
-						usrRegistrado = true;
-						break;
-					}
-				}
-			}
+		}
 				/*
 				Aqui se puede implementar control por contraseña
 				 */
-			if(baseClientes.isEmpty() || !usrRegistrado){
-				unUsuario = Main.nuevoUsuario();
-				baseClientes.add(unUsuario);
-			}
-
-			return unUsuario;
+		if (baseClientes.isEmpty() || !usrRegistrado) {
+			unUsuario = Main.nuevoUsuario(dni);
 		}
 
-    public static Usuario nuevoUsuario(){
+		return unUsuario;
+	}
 
-    	Scanner teclado = new Scanner(System.in);
-    	String nombre, apellido;
-    	int dni, edad;
+	public static Usuario nuevoUsuario(int dni) {
 
-    	while(true){
+		Scanner teclado = new Scanner(System.in);
+		String nombre, apellido;
+		int edad;
+
+		while (true) {
 			try {
 				System.out.println("Ingrese primer nombre: ");
 				nombre = teclado.nextLine();
 				System.out.println("Ingrese apellido: ");
 				apellido = teclado.nextLine();
-				System.out.println("Ingrese DNI: ");
-				dni = teclado.nextInt();
 				System.out.println("Ingrese edad: ");
 				edad = teclado.nextInt();
 
-				return new Usuario(nombre,apellido,dni,edad);
+				return new Usuario(nombre, apellido, dni, edad);
 
 			} catch (InputMismatchException e) {
 				System.out.println("Los datos ingresados son incorrectos: (" + e + ")");
@@ -176,49 +130,116 @@ public class Main {
 		}
 	}
 
-	public static void contratarVuelo(){
-    	Scanner teclado = new Scanner(System.in);
-    	System.out.println("Ingrese fecha de partida: ");
-    	String fecha = teclado.nextLine();
-		System.out.println("Ingrese fecha de llegada: ");
-		String llegada = teclado.nextLine();
+	public static void contratarVuelo(ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> aviones, ArrayList<Usuario> usuarios) {
+		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
+		LocalDate fecha = solicitarFecha();
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
-							"2- Cordoba \n"+
-							"3- Montevideo \n" +
-							"4- Santiago de chile \n");
+				"2- Cordoba \n" +
+				"3- Montevideo \n" +
+				"4- Santiago de chile \n");
 		Scanner nuevo = new Scanner(System.in);
 		int num = nuevo.nextInt();
 		Ciudad origen;
-		if (num == 1)
-		{origen = Ciudad.BUE;}
-		if (num == 2)
-		{origen = Ciudad.COR;}
-		if (num == 3)
-		{origen = Ciudad.MVD;}
-		if (num == 4)
-		{origen = Ciudad.SCL;}
-		int a = nuevo.nextInt();
 		Ciudad destino;
-		do {
-			System.out.println("Seleccione destino diferente al origen");
-			System.out.println("1- Buenos aires \n" +
-					"2- Cordoba \n"+
-					"3- Montevideo \n" +
-					"4- Santiago de chile \n");
-			if (num == 1)
-			{destino = Ciudad.BUE;}
-			if (num == 2)							//swich
-			{destino = Ciudad.COR;}
-			if (num == 3)
-			{destino = Ciudad.MVD;}
-			if (num == 4)
-			{destino = Ciudad.SCL;}
-		}while (origen == destino);
-		Main.mostrarAvionesDisp(fecha);
+		switch (num){
+			case 1:
+				origen = Ciudad.BUE;
+				System.out.println("Seleccione destino: ");
+				System.out.println("1- Cordoba \n" +
+						"2- Montevideo \n" +
+						"3- Santiago de chile \n");
+				int uno;
+				uno = nuevo.nextInt();
+				switch (uno)
+				{
+					case 1:
+						destino = Ciudad.COR;
+						break;
+					case 2:
+						destino = Ciudad.MVD;
+						break;
+					case 3:
+						destino = Ciudad.SCL;
+						break;
+
+				}
+				break;
+			case 2:
+				origen = Ciudad.COR;
+				System.out.println("Seleccione destino:");
+				System.out.println("1- Buenos Aires \n" +
+						"2- Montevideo \n" +
+						"3- Santiago de chile \n");
+				int dos;
+				dos = nuevo.nextInt();
+				switch (dos)
+				{
+					case 1:
+						destino = Ciudad.BUE;
+						break;
+					case 2:
+						destino = Ciudad.MVD;
+						break;
+					case 3:
+						destino = Ciudad.SCL;
+						break;
+
+				}
+				break;
+			case 3:
+				origen = Ciudad.MVD;
+				System.out.println("Seleccione destino: ");
+				System.out.println("1- Cordoba \n" +
+						"2- Buenos Aires \n" +
+						"3- Santiago de chile \n");
+				int tres;
+				tres = nuevo.nextInt();
+				switch (tres)
+				{
+					case 1:
+						destino = Ciudad.COR;
+						break;
+					case 2:
+						destino = Ciudad.BUE;
+						break;
+					case 3:
+						destino = Ciudad.SCL;
+						break;
+
+				}
+				break;
+			case 4:
+				origen = Ciudad.SCL;
+				System.out.println("Seleccione destino: ");
+				System.out.println("1- Cordoba \n" +
+						"2- Montevideo \n" +
+						"3- Buenos Aires \n");
+				int cua;
+				cua = nuevo.nextInt();
+				switch (cua)
+				{
+					case 1:
+						destino = Ciudad.COR;
+						break;
+					case 2:
+						destino = Ciudad.MVD;
+						break;
+					case 3:
+						destino = Ciudad.BUE;
+						break;
+
+				}
+				break;
+		}
+		Main.mostrarAvionesDisp(vuelosPactados, aviones, fecha);
 		Avion reservado = new Avion();
 		reservado = Main.reservar();
-		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada);
+		int cantpas = Main.cantPasajeros(reservado);
+		int dni = Main.solicitarDni();
+		Usuario nuevoUser = new Usuario();
+		nuevoUser = Main.obtenerUsr(usuarios, dni);
+		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada, cantpas, nuevoUser);
 		float costo = vuelonuevo.calcularCosto();
 		System.out.println("El costo todal del vuelo es de :" + costo);
 		System.out.println("¿Que desea realizar?\n" +
@@ -226,39 +247,74 @@ public class Main {
 				"2- Cancelar.");
 		Scanner conf = new Scanner(System.in);
 		int confirmacion = conf.nextInt();
-		if(confirmacion == 1)
-		{
+		if (confirmacion == 1) {
 			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
 			vuelosPactados.add(vuelonuevo);
 		}
-
 	}
 
-
-	public static Avion reservar ()
+	public static int cantPasajeros (Avion reservado)
 	{
+		int i = 1;
+		int flag = 0;
+		while (flag == 0) {
+			System.out.println("¿Numero de acompañantes?");
+			Scanner acomp = new Scanner(System.in);
+			int num = acomp.nextInt();
+			if (num+1 > reservado.getCapacidadMax())
+			{
+				System.out.println("Numero de pasajeros excede la capacidad maxima");
+			}
+			else
+			{
+				i = i + num;
+				flag = 1;
+			}
+		}
+		return i;
+	}
+
+	public static LocalDate solicitarFecha() {
+		Scanner teclado = new Scanner(System.in);
+		LocalDate fecha = null;
+		boolean fechaOk;
+		do {
+			try {
+				DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				fecha = LocalDate.parse(teclado.nextLine(), formato);
+				System.out.println(fecha);
+				fechaOk = true;
+			} catch (DateTimeParseException e) {
+				System.out.println("Formato de fecha incorrecto.");
+				fechaOk = false;
+			}
+		}
+		while (!fechaOk);
+
+		return fecha;
+	}
+
+	public static Avion reservar(ArrayList<Avion>flotaAviones, int avion) {
 		Scanner aviondes = new Scanner(System.in);
 		int flag = 0;
-		while(flag == 0) {													//Pide el numero de avion a reservar
+		while (flag == 0) {                                                    //Pide el numero de avion a reservar
 			System.out.println("Ingrese el numero del avion disponible que desee:");
-			int avion = aviondes.nextInt();									//Si ya esta reservado te pide que busques otro
-			if (flotaAviones.get(avion).enVuelo == true)
-			{
-				System.out.println("EL avion esta ocupado en esa fecha, elija otro");
-			}
-			else															//Si no lo reserva cambiando enVuelo a true
+			int avion = aviondes.nextInt();                                    //Si ya esta reservado te pide que busques otro
+			if (flotaAviones.get(avion).setEnVuelo(true)) {
+				System.out.println("El avion esta ocupado en esa fecha, elija otro");
+			} else                                                            //Si no lo reserva cambiando enVuelo a true
 			{
 				System.out.println("Avion elegido: " + flotaAviones.get(avion).toString());
-				flotaAviones.get(avion).enVuelo = true;
+				flotaAviones.get(avion).setEnVuelo(true);
 				flag = 1;
 			}
 		}																	
 		return flotaAviones.get(avion); 		 		 		 	 		//Devuelve el avion que se reservo
-	}
 
+	}
+	/*
 	//Tratar de que solo muestre los aviones disponibles
-	public static void mostrarAvionesDisp (String fecha)
-	{
+	public static void mostrarAvionesDisp(ArrayList<Avion> flotaAviones, ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
 		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
@@ -267,17 +323,16 @@ public class Main {
 			System.out.println(flotaAviones.get(i).tostring());   //la imprime
 			int flag = 0;
 			int p = 0;
-			while(flag == 0 && a <= j)												//recorre los vuelos pactados
+			while (flag == 0 && a <= j)                                                //recorre los vuelos pactados
 			{
-				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)		    //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
-					if (fecha == vuelosPactados.get(p).partida){					//si esta ocupado enVuelo pasa a ser true
+					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado enVuelo pasa a ser true
 						System.out.println("Avion no disponible para esa fecha");
 						flag = 1;
-						flotaAviones.get(i).enVuelo = true;
+						flotaAviones.get(i). = true;
 					}
-					if (fecha == vuelosPactados.get(p).llegada)
-					{
+					if (fecha == vuelosPactados.get(p).llegada) {
 						System.out.println("Avion no disponible para esa fecha");
 						flag = 1;
 						flotaAviones.get(i).enVuelo = true;
@@ -287,17 +342,51 @@ public class Main {
 			}
 
 		}
-	}
+	}*/
 
-
-
-
-	public static void listarClientes(ArrayList<Usuario> base) {
-		if (!base.isEmpty()) {
-			for (Usuario aux : base) {
-				System.out.println(aux);
+	public static void listarClientes(ArrayList<Usuario> baseClientes, ArrayList<Vuelo> vuelosPactados) {
+		if (!baseClientes.isEmpty()) {
+			for (Usuario auxCliente : baseClientes) {
+				System.out.println(auxCliente);
+				System.out.println(mejorAvionUsado(vuelosPactados,auxCliente));
 			}
 		} else
 			System.out.println("La base de clientes está vacía.");
 	}
+
+	public static void verVuelos(ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
+		for (Vuelo aux : vuelosPactados) {
+			if (aux.getPartida().equals(fecha))
+				System.out.println(aux);
+		}
+	}
+
+	public static String mejorAvionUsado(ArrayList<Vuelo> vuelosPactados,Usuario unUsuario){
+
+		String mejorAvion = "El cliente no ha contratado vuelos aun.";
+		boolean silver = false;
+
+		for(Vuelo unVuelo : vuelosPactados){
+			if(unVuelo.getClienteContratante().equals(unUsuario)){
+				Avion unAvion = unVuelo.getTipoAvion();
+				if(unAvion instanceof Gold) {
+					mejorAvion = "El cliente ha contratado categoria Gold";
+					break;
+				}
+				else if(unAvion instanceof Silver) {
+					mejorAvion = "El cliente ha contratado hasta categoria Silver";
+					silver = true;
+				}
+				else if(unAvion instanceof Bronze && !silver)
+					mejorAvion = "El cliente ha contratado hasta categoria Bronze";
+			}
+		}
+
+		return mejorAvion;
+	}
 }
+
+/*
+* FALTA PONER UN TOPE DE PASAJEROS EN EL AVION
+*
+* */

@@ -2,25 +2,22 @@ package com.company;
 
 import java.io.Serializable;
 
-public abstract class Avion implements Serializable {
+public class Avion implements Serializable {
     private int combustible;
     private float costoXkm;
     private int capacidadMax;
     private int velocidadMax;
     private Propulsion propulsion;
-    private boolean enVuelo;
 
     public Avion () {}
 
-    public Avion (int  combustible,int capacidadMax, Propulsion propulsion, boolean disponible)
+    public Avion (int  combustible,int capacidadMax, Propulsion propulsion)
     {
         this.capacidadMax = capacidadMax;
         this.combustible = combustible;
         this.costoXkm = (float) (Math.random() * (300 - 150) + 150);
         this.propulsion = propulsion;
         this.velocidadMax = propulsion.getVelocidadMax();
-        this.enVuelo = disponible;
-
     }
 
     @Override
@@ -30,9 +27,7 @@ public abstract class Avion implements Serializable {
                 ", costoXkm=" + costoXkm +
                 ", capacidadMax=" + capacidadMax +
                 ", velocidadMax=" + velocidadMax +
-                ", propulsion=" + propulsion +
-                ", disponible=" + enVuelo
-                ;
+                ", propulsion=" + propulsion;
     }
 
     public void setCapacidadMax(int capacidadMax) {
@@ -45,10 +40,6 @@ public abstract class Avion implements Serializable {
 
     public void setCostoXkm(float costoXkm) {
         this.costoXkm = costoXkm;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.enVuelo = disponible;
     }
 
     public void setPropulsion(Propulsion propulsion) {

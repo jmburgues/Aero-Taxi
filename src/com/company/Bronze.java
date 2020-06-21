@@ -9,7 +9,7 @@ public class Bronze extends Avion implements Serializable {
 
     public Bronze (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo)
     {
-        super(combustible, capacidadMax, propulsion, enVuelo);
+        super(combustible, capacidadMax, propulsion);
         this.tarifa = 3000;
     }
 
@@ -35,11 +35,6 @@ public class Bronze extends Avion implements Serializable {
     @Override
     public void setCostoXkm(float costoXkm) {
         super.setCostoXkm(costoXkm);
-    }
-
-    @Override
-    public void setDisponible(boolean disponible) {
-        super.setDisponible(disponible);
     }
 
     @Override
