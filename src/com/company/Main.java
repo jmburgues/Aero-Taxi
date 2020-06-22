@@ -39,7 +39,7 @@ public class Main {
 		flotaAviones.add(tres);
 		Usuario unos = new Usuario("Juan", "Martin", 264546, 15);
 		System.out.println("Fecha");
-		Vuelo dou = new Vuelo(Ciudad.BUE, Ciudad.SCL, uno, Main.solicitarFecha(),20, unos);
+		Vuelo dou = new Vuelo(Ciudad.BUE, Ciudad.SCL, uno, Main.solicitarFecha(),Main.solicitarFecha(),20, unos);
 
 
 		Scanner teclado = new Scanner(System.in);
@@ -56,7 +56,9 @@ public class Main {
 
 			switch (opcionMenu) {
 				case 1:
-					Main.contratarVuelo(vuelosPactados, flotaAviones, baseClientes);
+					System.out.println("que fechad deseas viajar?");
+					Main.mostrarAvionesDisp(flotaAviones, vuelosPactados, solicitarFecha());
+					//Main.contratarVuelo(vuelosPactados, flotaAviones, baseClientes);
 					break;
 				case 2:
 					/* metodo cancelar vuelo */
@@ -144,7 +146,7 @@ public class Main {
 
 	public static void contratarVuelo(ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> aviones, ArrayList<Usuario> usuarios) {
 		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
-		LocalDate fecha = solicitarFecha();
+		LocalDate fecha = Main.solicitarFecha();
 		LocalDate llegada = fecha;
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
@@ -252,7 +254,7 @@ public class Main {
 		int cantpas = Main.cantPasajeros(reservado);
 		int dni = Main.solicitarDni();
 		Usuario nuevoUser = Main.obtenerUsr(usuarios, dni);
-		Vuelo vueloNuevo = new Vuelo(origen, destino, reservado, llegada, cantpas, nuevoUser);
+		Vuelo vueloNuevo = new Vuelo(origen, destino, reservado, fecha, llegada, cantpas, nuevoUser);
 		float costo = vueloNuevo.calcularCosto();
 		System.out.println("El costo todal del vuelo es de :" + costo);
 		System.out.println("¿Que desea realizar?\n" +
@@ -331,7 +333,7 @@ public class Main {
 	public static int comprobarId(int id, ArrayList<Integer> listaIDs)
 	{
 		int flag = 0;
-		for (int i = 0; i<= listaIDs.size(); i++){
+		for (int i = 0; i< listaIDs.size(); i++){
 			if(id == listaIDs.get(i))
 			{
 				flag++;
@@ -345,19 +347,19 @@ public class Main {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
 		ArrayList<Integer> Ides = new ArrayList<>();
-		for (int i = 0; i <= a; i++)      //recorre la flota de aviones
+		for (int i = 0; i < a; i++)      //recorre la flota de aviones
 		{
 
 			int flag = 0;
 			int p = 0;
-			while (flag == 0 && p <= j)                                                //recorre los vuelos pactados
-			{																			//error en la comparacion
-				if (flotaAviones.get(i).equals(vuelosPactados.get(p).tipoAvion)== true)           //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+			while (flag == 0 && p < j)                                                //recorre los vuelos pactados
+			{																			//error en la comparacion, no entra nunca al if
+				if (flotaAviones.get(i).equals(vuelosPactados.get(p).tipoAvion) == true)           //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
-					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado flag cambia a 1
+					System.out.println("Hola");
+					if (fecha.compareTo(vuelosPactados.get(p).partida) == 0) {                    //si esta ocupado flag cambia a 1
 						flag = 1;
 					}
-
 				}
 				p++;
 			}
