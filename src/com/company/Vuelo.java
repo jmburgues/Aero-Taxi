@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Vuelo implements Serializable {
+    private static final long serialVersionUID = 500;
     public Ciudad origen;
     public Ciudad destino;
     public Avion tipoAvion;
@@ -20,7 +21,7 @@ public class Vuelo implements Serializable {
         this.destino = destino;
         this.tipoAvion = tipoAvion;
         this.partida = partida;
-        this.llegada = partida.plusDays((int) this.obtenerDistancia() / this.tipoAvion.getVelocidadMax() / 60);
+        this.llegada = partida.plusDays(this.obtenerDistancia() / this.tipoAvion.getVelocidadMax() / 60);
         this.cantPasajeros = cantPasajeros;
         this.clienteContratante = clienteContratante;
     }
@@ -37,7 +38,7 @@ public class Vuelo implements Serializable {
 
 		int clave = origen.hashCode() + destino.hashCode();
 
-		return tablaDistancias.get(clave).intValue();
+		return tablaDistancias.get(clave);
     }
 
     public float calcularCosto(){

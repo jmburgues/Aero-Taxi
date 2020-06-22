@@ -3,11 +3,12 @@ package com.company;
 import java.io.Serializable;
 
 public class Bronze extends Avion implements Serializable {
+    private static final long serialVersionUID = 300;
     private int tarifa;
 
     public Bronze (){}
 
-    public Bronze (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo)
+    public Bronze (int combustible,int capacidadMax, Propulsion propulsion)
     {
         super(combustible, capacidadMax, propulsion);
         this.tarifa = 3000;

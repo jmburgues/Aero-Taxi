@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Scanner;
 
 public class Silver extends Avion implements Serializable {
+    private static final long serialVersionUID = 200;
     private boolean wifi;
     private int tarifa;
 
     public Silver(){}
 
-    public Silver (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo, boolean wifi)
+    public Silver (int combustible,int capacidadMax, Propulsion propulsion, boolean wifi)
     {
         super(combustible, capacidadMax, propulsion);
         this.tarifa = 4000;

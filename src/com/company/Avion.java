@@ -3,6 +3,7 @@ package com.company;
 import java.io.Serializable;
 
 public abstract class Avion implements Serializable {
+    private static final long serialVersionUID = 600;
     private int combustible;
     private float costoXkm;
     private int capacidadMax;

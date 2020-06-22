@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Scanner;
 
 public class Gold extends Avion implements Serializable {
+    private static final long serialVersionUID = 100;
     private boolean wifi;
     private boolean catering;
     private int tarifa;
@@ -19,7 +20,7 @@ public class Gold extends Avion implements Serializable {
 
     public Gold (){}
 
-    public Gold (int combustible,int capacidadMax,Propulsion propulsion, boolean enVuelo, boolean wifi, boolean catering)
+    public Gold (int combustible,int capacidadMax,Propulsion propulsion, boolean wifi, boolean catering)
     {
         super(combustible, capacidadMax, propulsion);
         this.wifi = wifi;

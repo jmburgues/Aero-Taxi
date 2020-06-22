@@ -22,12 +22,14 @@ public class Archivo<T> {
 
 				boolean finArchivo = false;
 
-				while (!finArchivo) {
-					T leido = (T)entradaObjeto.readObject();
-					if (leido != null) {
-							base.add(leido);
-					} else
-						finArchivo = true;
+				while (true) {
+					try {
+						T leido = (T) entradaObjeto.readObject();
+						base.add(leido);
+					}
+					catch(EOFException excep){
+						break;
+					}
 				}
 				flujoEntrada.close();
 			} catch (IOException | ClassNotFoundException e) {
@@ -46,18 +48,20 @@ public class Archivo<T> {
 		File archivo = new File(archivoBase);
 
 		try {
-			if (!archivo.exists())
-				archivo.createNewFile();
+			if (!archivo.exists()) {
+				if (archivo.createNewFile()) {
 
-			FileOutputStream flujoSalida = new FileOutputStream(archivo);
-			ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
+					FileOutputStream flujoSalida = new FileOutputStream(archivo);
+					ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
 
-			for (T aux : base) {
-				salidaObjeto.writeObject(aux);
+					for (T aux : base) {
+						salidaObjeto.writeObject(aux);
+					}
+					salidaObjeto.close();
+					flujoSalida.close();
+				}
 			}
-			salidaObjeto.close();
-			flujoSalida.close();
-		} catch (IOException e) {
+		} catch(IOException e){
 			System.out.println("No se puede leer la base de datos: " + e.getMessage());
 			e.printStackTrace();
 		}
