@@ -1,16 +1,31 @@
 package com.company;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Bronze extends Avion implements Serializable {
     private int tarifa;
 
     public Bronze (){}
 
-    public Bronze (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo)
+    public Bronze (int combustible,int capacidadMax, Propulsion propulsion)
     {
         super(combustible, capacidadMax, propulsion);
         this.tarifa = 3000;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bronze)) return false;
+        if (!super.equals(o)) return false;
+        Bronze bronze = (Bronze) o;
+        return tarifa == bronze.tarifa;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tarifa);
     }
 
     @Override

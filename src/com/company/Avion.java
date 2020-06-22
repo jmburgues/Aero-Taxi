@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Avion implements Serializable {
     private int combustible;
@@ -18,6 +19,23 @@ public class Avion implements Serializable {
         this.costoXkm = (float) (Math.random() * (300 - 150) + 150);
         this.propulsion = propulsion;
         this.velocidadMax = propulsion.getVelocidadMax();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Avion)) return false;
+        Avion avion = (Avion) o;
+        return combustible == avion.combustible &&
+                Float.compare(avion.costoXkm, costoXkm) == 0 &&
+                capacidadMax == avion.capacidadMax &&
+                velocidadMax == avion.velocidadMax &&
+                propulsion == avion.propulsion;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(combustible, costoXkm, capacidadMax, velocidadMax, propulsion);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Silver extends Avion implements Serializable {
@@ -9,11 +10,26 @@ public class Silver extends Avion implements Serializable {
 
     public Silver(){}
 
-    public Silver (int combustible,int capacidadMax, Propulsion propulsion, boolean enVuelo, boolean wifi)
+    public Silver (int combustible,int capacidadMax, Propulsion propulsion, boolean wifi)
     {
         super(combustible, capacidadMax, propulsion);
         this.tarifa = 4000;
         this.wifi = wifi;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Silver)) return false;
+        if (!super.equals(o)) return false;
+        Silver silver = (Silver) o;
+        return wifi == silver.wifi &&
+                tarifa == silver.tarifa;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), wifi, tarifa);
     }
 
     @Override

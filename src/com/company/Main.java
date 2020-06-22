@@ -31,6 +31,17 @@ public class Main {
 			clientesFile.persistir(baseClientes);
 		}
 
+		Gold uno = new Gold(150, 20, Propulsion.REACCION,true, true);
+		Gold dos = new Gold(150, 20, Propulsion.REACCION,true, true);
+		Bronze tres = new Bronze(45, 32, Propulsion.REACCION);
+		flotaAviones.add(uno);
+		flotaAviones.add(dos);
+		flotaAviones.add(tres);
+		Usuario unos = new Usuario("Juan", "Martin", 264546, 15);
+		System.out.println("Fecha");
+		Vuelo dou = new Vuelo(Ciudad.BUE, Ciudad.SCL, uno, Main.solicitarFecha(),20, unos);
+
+
 		Scanner teclado = new Scanner(System.in);
 		int opcionMenu;
 
@@ -241,8 +252,8 @@ public class Main {
 		int cantpas = Main.cantPasajeros(reservado);
 		int dni = Main.solicitarDni();
 		Usuario nuevoUser = Main.obtenerUsr(usuarios, dni);
-		Vuelo vuelonuevo = new Vuelo(origen, destino, reservado, llegada, cantpas, nuevoUser);
-		float costo = vuelonuevo.calcularCosto();
+		Vuelo vueloNuevo = new Vuelo(origen, destino, reservado, llegada, cantpas, nuevoUser);
+		float costo = vueloNuevo.calcularCosto();
 		System.out.println("El costo todal del vuelo es de :" + costo);
 		System.out.println("¿Que desea realizar?\n" +
 				"1- Contratar. \n" +
@@ -250,8 +261,8 @@ public class Main {
 		Scanner conf = new Scanner(System.in);
 		int confirmacion = conf.nextInt();
 		if (confirmacion == 1) {
-			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vuelonuevo.toString());
-			vuelosPactados.add(vuelonuevo);
+			System.out.println("Tu vuelo se ha reservado con exito, detalles del vuelo:" + vueloNuevo.toString());
+			vuelosPactados.add(vueloNuevo);
 		}
 		else {
 			System.out.println("Vuelo cancelado con exito");
@@ -340,8 +351,8 @@ public class Main {
 			int flag = 0;
 			int p = 0;
 			while (flag == 0 && p <= j)                                                //recorre los vuelos pactados
-			{
-				if (flotaAviones.get(i) == vuelosPactados.get(p).tipoAvion)            //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+			{																			//error en la comparacion
+				if (flotaAviones.get(i).equals(vuelosPactados.get(p).tipoAvion)== true)           //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
 					if (fecha == vuelosPactados.get(p).partida) {                    //si esta ocupado flag cambia a 1
 						flag = 1;
@@ -353,6 +364,18 @@ public class Main {
 			if (flag == 0)
 			{
 				System.out.println("Avion id n* "+ i);
+				if (flotaAviones.get(i) instanceof Gold)
+				{
+					System.out.println("Avion tipo GOlD");
+				}
+				if (flotaAviones.get(i) instanceof Bronze)
+				{
+					System.out.println("Avion tipo BRONZE");
+				}
+				if (flotaAviones.get(i) instanceof Silver)
+				{
+					System.out.println("Avion tipo SILVER");
+				}
 				System.out.println(flotaAviones.get(i).toString());
 				Ides.add(i);
 			}
