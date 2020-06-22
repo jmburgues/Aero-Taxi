@@ -31,16 +31,6 @@ public class Main {
 			clientesFile.persistir(baseClientes);
 		}
 
-		Gold uno = new Gold(150, 20, Propulsion.REACCION,true, true);
-		Gold dos = new Gold(150, 20, Propulsion.REACCION,true, true);
-		Bronze tres = new Bronze(45, 32, Propulsion.REACCION);
-		flotaAviones.add(uno);
-		flotaAviones.add(dos);
-		flotaAviones.add(tres);
-		Usuario unos = new Usuario("Juan", "Martin", 264546, 15);
-		System.out.println("Fecha");
-		Vuelo dou = new Vuelo(Ciudad.BUE, Ciudad.SCL, uno, Main.solicitarFecha(),Main.solicitarFecha(),20, unos);
-
 
 		Scanner teclado = new Scanner(System.in);
 		int opcionMenu;
@@ -57,8 +47,7 @@ public class Main {
 			switch (opcionMenu) {
 				case 1:
 					System.out.println("que fechad deseas viajar?");
-					Main.mostrarAvionesDisp(flotaAviones, vuelosPactados, solicitarFecha());
-					//Main.contratarVuelo(vuelosPactados, flotaAviones, baseClientes);
+					Main.contratarVuelo(vuelosPactados, flotaAviones, baseClientes);
 					break;
 				case 2:
 					/* metodo cancelar vuelo */
@@ -347,21 +336,18 @@ public class Main {
 		int a = flotaAviones.size();
 		int j = vuelosPactados.size();
 		ArrayList<Integer> Ides = new ArrayList<>();
+
 		for (int i = 0; i < a; i++)      //recorre la flota de aviones
 		{
-
 			int flag = 0;
-			int p = 0;
-			while (flag == 0 && p < j)                                                //recorre los vuelos pactados
-			{																			//error en la comparacion, no entra nunca al if
-				if (flotaAviones.get(i).equals(vuelosPactados.get(p).tipoAvion) == true)           //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
+			for(int p = 0; p<j && flag == 0; p++)                                              // no entra al while
+			{
+				if (flotaAviones.get(i).equals(vuelosPactados.get(p).tipoAvion))           //si el avion esta en la lista de vuelos pactados se fija si en esa fecha esta ocupado
 				{
-					System.out.println("Hola");
 					if (fecha.compareTo(vuelosPactados.get(p).partida) == 0) {                    //si esta ocupado flag cambia a 1
 						flag = 1;
 					}
 				}
-				p++;
 			}
 			if (flag == 0)
 			{

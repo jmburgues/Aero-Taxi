@@ -40,7 +40,7 @@ public class Avion implements Serializable {
 
     @Override
     public String toString() {
-        return "Avion" +
+        return
                 "combustible=" + combustible +
                 ", costoXkm=" + costoXkm +
                 ", capacidadMax=" + capacidadMax +
