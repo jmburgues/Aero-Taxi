@@ -147,7 +147,6 @@ public class Main {
 	public static void contratarVuelo(ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> aviones, ArrayList<Usuario> usuarios) {
 		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
 		LocalDate fecha = Main.solicitarFecha();
-		LocalDate llegada = fecha;
 		System.out.println("Seleccione origen:");
 		System.out.println("1- Buenos aires \n" +
 				"2- Cordoba \n" +
@@ -254,7 +253,7 @@ public class Main {
 		int cantpas = Main.cantPasajeros(reservado);
 		int dni = Main.solicitarDni();
 		Usuario nuevoUser = Main.obtenerUsr(usuarios, dni);
-		Vuelo vueloNuevo = new Vuelo(origen, destino, reservado, fecha, llegada, cantpas, nuevoUser);
+		Vuelo vueloNuevo = new Vuelo(origen, destino, reservado, fecha, cantpas, nuevoUser);
 		float costo = vueloNuevo.calcularCosto();
 		System.out.println("El costo todal del vuelo es de :" + costo);
 		System.out.println("¿Que desea realizar?\n" +
@@ -270,7 +269,6 @@ public class Main {
 			System.out.println("Vuelo cancelado con exito");
 		}
 	}
-
 
 	public static int cantPasajeros (Avion reservado)
 	{
