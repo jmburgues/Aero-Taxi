@@ -9,6 +9,8 @@ public class Usuario implements Serializable {
     private int dni;
     private int edad;
 
+    public Usuario(){}
+
     public Usuario (String nombre,String apellido, int dni, int edad){
         this.nombre=nombre;
         this.apellido=apellido;

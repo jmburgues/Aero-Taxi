@@ -16,7 +16,7 @@ public class Vuelo implements Serializable {
     public int cantPasajeros;
     public Usuario clienteContratante;
 
-    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida, int cantPasajeros, Usuario clienteContratante) {
+    /*public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida, int cantPasajeros, Usuario clienteContratante) {
         this.origen = origen;
         this.destino = destino;
         this.tipoAvion = tipoAvion;
@@ -24,7 +24,19 @@ public class Vuelo implements Serializable {
         this.llegada = partida.plusDays(this.obtenerDistancia() / this.tipoAvion.getVelocidadMax() / 60);
         this.cantPasajeros = cantPasajeros;
         this.clienteContratante = clienteContratante;
+    }*/
+
+    public Vuelo(Ciudad origen, Ciudad destino, Avion tipoAvion, LocalDate partida, LocalDate llegada, int cantPasajeros, Usuario clienteContratante) {
+        this.origen = origen;
+        this.destino = destino;
+        this.tipoAvion = tipoAvion;
+        this.partida = partida;
+        this.llegada = llegada;
+        this.cantPasajeros = cantPasajeros;
+        this.clienteContratante = clienteContratante;
     }
+
+
 
     public int obtenerDistancia(){
 		HashMap<Integer,Integer> tablaDistancias = new HashMap<>();
@@ -81,8 +93,11 @@ public class Vuelo implements Serializable {
 
     @Override
     public String toString(){
-        return ("[VUELO] " + this.origen + " - " + this.destino + ": Partida: " + this.partida +
-                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantPasajeros);
+        return ("[VUELO] " + this.origen + " - " + this.destino +
+                "\n Partida: " + this.partida +
+                ",\n llegada: " + this.llegada +
+                ",\n Avion: " + this.tipoAvion +
+                ",\n Cantidad de Pasajeros: " + this.cantPasajeros);
     }
 }
 

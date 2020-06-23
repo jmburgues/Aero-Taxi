@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Gold extends Avion implements Serializable {
@@ -29,8 +30,24 @@ public class Gold extends Avion implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Gold)) return false;
+        if (!super.equals(o)) return false;
+        Gold gold = (Gold) o;
+        return wifi == gold.wifi &&
+                catering == gold.catering &&
+                tarifa == gold.tarifa;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), wifi, catering, tarifa);
+    }
+
+    @Override
     public String toString() {
-        return "Gold: "+ super.toString() + "wifi=" + wifi + "Tarifa: " + tarifa;
+        return "Gold: "+ super.toString() + ", Wifi:" + wifi + ", Tarifa: " + tarifa;
     }
 
     @Override
