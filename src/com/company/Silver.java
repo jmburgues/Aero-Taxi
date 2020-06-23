@@ -35,7 +35,9 @@ public class Silver extends Avion implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + "tarifa=" + tarifa;
+        String wifi = (this.wifi)?"SI":"NO";
+        return ("[CLASE SILVER]: "+ super.toString() + ", WiFi: " + wifi +
+                ", Tarifa: $" + tarifa);
     }
 
     @Override

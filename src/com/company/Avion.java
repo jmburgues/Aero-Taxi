@@ -41,12 +41,8 @@ public abstract class Avion implements Serializable {
 
     @Override
     public String toString() {
-        return "Avion" +
-                "combustible=" + combustible +
-                ", costoXkm=" + costoXkm +
-                ", capacidadMax=" + capacidadMax +
-                ", velocidadMax=" + velocidadMax +
-                ", propulsion=" + propulsion;
+        return ("Propulsion: " + propulsion + ", Velocidad Maxima: " + velocidadMax + " Km/H, MAX Pasajeros: " + capacidadMax);
+
     }
 
     public void setCapacidadMax(int capacidadMax) {

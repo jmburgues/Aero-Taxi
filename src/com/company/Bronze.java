@@ -31,7 +31,8 @@ public class Bronze extends Avion implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + ", Tarifa: " + tarifa;
+
+        return ("[CLASE BRONZE]: "+ super.toString() + ", Tarifa: $" + tarifa);
     }
 
     public void setTarifa(int tarifa) {
