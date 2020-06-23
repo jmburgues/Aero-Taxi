@@ -35,8 +35,6 @@ public class Archivo<T> {
 			} catch (IOException | ClassNotFoundException e) {
 				System.out.println("No se puede leer la base de datos: " + e.getMessage());
 				e.printStackTrace();
-			} finally {
-				//************************* NO ME DEJA CERRAR EL STREAM. *****************************
 			}
 		}
 
@@ -48,19 +46,16 @@ public class Archivo<T> {
 		File archivo = new File(archivoBase);
 
 		try {
-			if (!archivo.exists()) {
-				if (archivo.createNewFile()) {
+			if (!archivo.exists())
+				archivo.createNewFile();
+			FileOutputStream flujoSalida = new FileOutputStream(archivo);
+			ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
 
-					FileOutputStream flujoSalida = new FileOutputStream(archivo);
-					ObjectOutputStream salidaObjeto = new ObjectOutputStream(flujoSalida);
-
-					for (T aux : base) {
-						salidaObjeto.writeObject(aux);
-					}
-					salidaObjeto.close();
-					flujoSalida.close();
-				}
+			for (T aux : base) {
+				salidaObjeto.writeObject(aux);
 			}
+			salidaObjeto.close();
+			flujoSalida.close();
 		} catch(IOException e){
 			System.out.println("No se puede leer la base de datos: " + e.getMessage());
 			e.printStackTrace();

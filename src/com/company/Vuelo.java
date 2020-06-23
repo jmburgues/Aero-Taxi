@@ -81,8 +81,10 @@ public class Vuelo implements Serializable {
 
     @Override
     public String toString(){
-        return ("[VUELO] " + this.origen + " - " + this.destino + ": Partida: " + this.partida +
-                ", llegada: " + this.llegada + ", Avion: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantPasajeros);
+        return ("[VUELO] " + this.origen + " - " + this.destino + ", Partida: " + this.partida + ", llegada: " + this.llegada + "\n" +
+                "  - AVION: " + this.tipoAvion + ", Cantidad de Pasajeros: " + this.cantPasajeros + "\n" +
+                "  - COSTO TOTAL: " + this.calcularCosto() + "\n");
+
     }
 }
 

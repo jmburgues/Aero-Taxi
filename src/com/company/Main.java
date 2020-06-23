@@ -1,20 +1,5 @@
 package com.company;
 
-/* A CORREGIR:
-
-No se debe poder contratar para fecha actual o anteriores.
-
-Mensaje: No hay aviones disponibles para esa fecha.
-
-Opcion 3: Ver base de clientes, no lista categoria bronze
-
-Opcion 4: Ver vuelos programados: agregar el usuario que contrató el vuelo
-
-Revisar formula de tarifa. (por las dudas)
-
-* */
-
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -48,8 +33,9 @@ public class Main {
 		}
 
 		// Interfaz del usuario
-		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n");
-		int dni = Main.solicitarDni();
+		System.out.println("Sistema de Contratación de Vuelos << AERO-TAXI >>\n" +
+				"Ingrese su DNI:");
+		int dni = solicitarInteger();
 		Usuario usuarioValidado = obtenerUsr(baseClientes, dni);
 
 		if(!baseClientes.contains(usuarioValidado)){
@@ -68,7 +54,7 @@ public class Main {
 					"4- Ver vuelos programados.\n" +
 					"5- Salir");
 
-			opcionMenu = teclado.nextInt();
+			opcionMenu = solicitarInteger();
 
 			switch (opcionMenu) {
 				case 1:
@@ -81,15 +67,19 @@ public class Main {
 					}
 					break;
 				case 2:
-					/* metodo cancelar vuelo */
+					System.out.println("Ingrese fecha de partida de su vuelo (aaaa-mm-dd): ");
+					LocalDate fechaPartida = solicitarFecha();
+					Vuelo aCancelar = cancelarVuelo(usuarioValidado,fechaPartida,vuelosPactados);
+					if(aCancelar != null){
+						vuelosPactados.remove(aCancelar);
+						vuelosFile.persistir(vuelosPactados);
+					}
 					break;
 				case 3:
 					Main.listarClientes(baseClientes,vuelosPactados);
 					break;
 				case 4:
-					System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
-					LocalDate fecha = solicitarFecha();
-					Main.verVuelos(vuelosPactados,fecha);
+					Main.verVuelos(vuelosPactados);
 					break;
 			}
 		}
@@ -97,26 +87,6 @@ public class Main {
 	}
 
 	// funciones de la clase Main
-	public static int solicitarDni() {
-		Scanner teclado = new Scanner(System.in);
-
-		int dni = 0;
-		boolean dniInvalido;
-
-		do {
-			try {
-				System.out.println("Ingrese su DNI: ");
-				dni = teclado.nextInt();
-				dniInvalido = false;
-			} catch (InputMismatchException e) {
-				System.out.println("Ingrese un valor numerico valido.");
-				dniInvalido = true;
-			}
-		}
-		while (dniInvalido);
-
-		return dni;
-	}
 
 	public static LocalDate solicitarFecha() {
 		Scanner teclado = new Scanner(System.in);
@@ -185,6 +155,10 @@ public class Main {
 
 		System.out.println("Ingrese fecha de partida (aaaa-mm-dd): ");
 		LocalDate fechaPartida = Main.solicitarFecha();
+		while(fechaPartida.isBefore(LocalDate.now().plusDays(1))) {
+			System.out.println("Los vuelos deben reservarse con un día de anticipación. Ingrese nueva fecha:");
+			fechaPartida = solicitarFecha();
+		}
 
 		ArrayList<Ciudad> itinerario = new ArrayList<>();
 		itinerario.add(Ciudad.BUE);
@@ -247,6 +221,27 @@ public class Main {
 		return vueloReservado;
 	}
 
+	public static Vuelo cancelarVuelo(Usuario usuario, LocalDate fechaVuelo, ArrayList<Vuelo> vuelosPactados){
+		boolean encontrado = false;
+
+		Vuelo unVuelo = null;
+		for (Vuelo aux : vuelosPactados) {
+			if (aux.getPartida().compareTo(fechaVuelo) == 0 && aux.getClienteContratante().getDni() == usuario.getDni()) {
+				if (aux.getPartida().isAfter(LocalDate.now())) {
+					unVuelo = aux;
+				} else
+					System.out.println("El vuelo debe cancelarse con al menos un día de anticipacion. No se canceló.");
+				encontrado = true;
+			}
+			if(encontrado)
+				break;
+		}
+		if(!encontrado)
+			System.out.println("Ud. no tiene un vuelo reservado para la fecha indicada.");
+
+		return unVuelo;
+	}
+
 	public static Avion seleccionarAvion(ArrayList<Vuelo> vuelosPactados, ArrayList<Avion> flotaAviones,LocalDate fechaPartida,int cantPasajeros){
 		int i = 0;
 		boolean avionReservado = false;
@@ -294,16 +289,14 @@ public class Main {
 			System.out.println("La base de clientes está vacía.");
 	}
 
-	public static void verVuelos(ArrayList<Vuelo> vuelosPactados, LocalDate fecha) {
-		boolean existenVuelos = false;
-		for (Vuelo aux : vuelosPactados) {
-			if (aux.getPartida().equals(fecha)) {
+	public static void verVuelos(ArrayList<Vuelo> vuelosPactados) {
+		if(!vuelosPactados.isEmpty()) {
+			for (Vuelo aux : vuelosPactados) {
 				System.out.println(aux);
-				existenVuelos = true;
 			}
 		}
-		if(!existenVuelos)
-			System.out.println("No existen vuelos programados para la fecha " + fecha);
+		else
+			System.out.println("No existen vuelos programados.");
 	}
 
 	public static String mejorAvionUsado(ArrayList<Vuelo> vuelosPactados,Usuario unUsuario){
@@ -312,7 +305,7 @@ public class Main {
 		boolean silver = false;
 
 		for(Vuelo unVuelo : vuelosPactados){
-			if(unVuelo.getClienteContratante().equals(unUsuario)){
+			if(unVuelo.getClienteContratante().getDni() == unUsuario.getDni()){
 				Avion unAvion = unVuelo.getTipoAvion();
 				if(unAvion instanceof Gold) {
 					mejorAvion = "El cliente ha contratado categoria Gold";
