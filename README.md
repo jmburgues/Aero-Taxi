@@ -1,4 +1,10 @@
-# Lab3TPF
+# Aero-Taxi
+
+Final project for Programming Laboratory III assignment at Universidad Tecnológica Nacional.
+The system allows it's users to contract private flights choosing from certain defined destinations and different airplanes classes and services. Written entirely in Java (core), it uses exceptions, serialization, generic object types, and collections in order to meet it's requirements.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
 Trabajo Final de Laboratorio III (UTN)
 
 Junio 2020
